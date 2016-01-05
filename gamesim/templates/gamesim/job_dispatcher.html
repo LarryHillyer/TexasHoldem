@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+<meta content="en-us" http-equiv="Content-Language" />
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+<link href="{% static 'css/bootstrap-fluid-adj.css' %}" rel="stylesheet">
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+<link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+<link href="{% static 'css/dispatch.css' %}" rel="stylesheet">
+
+<title>{% block title %}Job Dispatcher{% endblock %}</title>
+
+{% block head_scripts %}
+<script type="text/javascript">
+	function update_dispatcher() {		
+		var int1 = int1Trigger();
+		var int2 = int2Trigger();}
+		
+	function int1Trigger() {
+		return setInterval(function(){ button_click() }, 2500); }	
+	function int2Trigger() {
+		return setInterval(function(){ button2_click() }, 2500); }
+	
+	function button_click() {		
+		var status = document.getElementById("get_status").getAttribute("class");
+		if (status != "Finished" ){
+			document.getElementById("get_status").click(); }}	
+	function button2_click() {			
+		var status = document.getElementById("get_status").getAttribute("class");	 
+		if (status != "Finished" ){
+			document.getElementById("get_l_status").click(); }}
+	
+</script>
+{% endblock %}
+
+</head>
+
+<body onload="update_dispatcher()">
+
+<h2 id="title">TexasHoldem HoleHand Probability Simulation</h2>
+
+<div id="sidebar">
+
+<br/>
+<h3 id="sb_title">Job Options</h3>
+	<ul>
+		<li><a href="/gamesim/"  >Create Simulation</a></li>
+		<li><a href="/gamesim/job_queue/" >Simulation Queue</a></li>
+		<li><a href="/gamesim/job_dispatcher/ ">Simulation Dispatcher</a></li>		
+		<li><a href="/gamesim/query_jobs/" >Create Analysis</a></li>
+        <li><a href="/gamesim/analyze_queue">Analysis Queue</a></li>
+		<li><a href="/gamesim/analyzer_dispatcher/" >Analysis Dispatcher</a></li>        				
+		<li><a href="/gamesim/initialize_sim/">Initialize Simulation</a></li>	
+	</ul>       
+
+</div>
+
+<div id="content">
+
+<br/>
+
+<b id="job_name" ></b><br />
+<b id="job_dispatcher_status">Job Dispatcher is: {{ dispatcher_status1.status }}</b><br/>
+<b id="dispatcher_time">Job has ran for: </b><br />
+<br />
+<button id="reset_dispatch" type="button">Reset Dispatcher</button>
+<br />
+<br />
+
+<table id="cpu_update"> 
+	<thead>
+		<tr>
+			<th scope="col">  Loop  </th>
+			<th scope="col">  CPU 1  </th>
+			<th scope="col">  CPU 2  </th>
+			<th scope="col">  CPU 3  </th>
+		</tr>
+	</thead>
+	<tbody id="tbody">
+	</tbody>
+</table>
+
+
+<button id="get_status"  data-statusid="{{ dispatcher_status1.id}}" type="button" 
+	class="{{ dispatcher_status1.status }}" hidden="hidden"  >Status</button>
+<button id="get_l_status"  type="button" hidden="hidden"  > Loop Status</button>
+
+</div>
+
+<script src="{% static 'js/jquery-2.1.4.js' %}"></script>    
+<script src="{% static 'js/gamesim-ajax.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+</body>
+
+</html>

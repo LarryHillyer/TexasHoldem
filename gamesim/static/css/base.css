@@ -1,0 +1,18 @@
+﻿#content {
+float:left;
+margin:30px;
+}
+
+#sidebar {
+float:left;
+margin:10px;
+}
+
+#title {
+text-align:left;
+margin:20px;
+}
+
+body {
+font-family:Arial, Helvetica, sans-serif;
+}

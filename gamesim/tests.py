@@ -1,0 +1,6 @@
+from django.test import TestCase
+
+class PollsViewsTestCase(TestCase):
+    def test_index(self):
+        resp = self.client.get('/gamesim/query_jobs/')
+        self.assertEqual(resp.status_code, 200)

@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+{% extends 'gamesim/base.html' %}	
+<head>
+
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+	<title>	{% block title %}Simulation Job{% endblock %}
+</title>
+</head>
+
+<body>
+	
+	{% block body_block %}
+			
+		<h1>Texas Holdem Hole Hand Simulation Job Page</h1>
+		<h2>Job Name: {{ job_name }}</h2>
+		<h2>Status: {{ status }}</h2>
+		<h2>Number of Players: {{ num_players }}</h2>
+		<h2>Number of CPUs: {{ num_cpus }}</h2>
+		<h2>Number of Loops: {{ num_loops }}</h2>
+		<h2>Number of Games: {{ num_games }}</h2>
+				
+	{% endblock %}
+	
+</body>
+
+</html>

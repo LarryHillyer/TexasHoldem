@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+
+<head>
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+    <link href="{% static 'css/bootstrap-fluid-adj.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dispatch.css' %}" rel="stylesheet">
+
+    <title>{% block title %}Analyze Job Dispatcher{% endblock %}</title>
+
+    {% block head_scripts %}
+    <script type="text/javascript">
+        function update_analyzer() { 		
+		  int1Trigger();
+		  int2Trigger();}
+		
+	   function int1Trigger() {
+		  return setInterval(function(){ button_click() }, 2500); }	
+	   function int2Trigger() {
+		  return setInterval(function(){ button2_click() }, 2500); }
+	
+	   function button_click() {		
+		  var status = document.getElementById("analyze_get_status").getAttribute("class");
+		  if (status != "Finished" ){
+			 document.getElementById("analyze_get_status").click(); }}	
+	   function button2_click() {			
+		  var status = document.getElementById("analyze_get_status").getAttribute("class");	 
+		  if (status != "Finished" ){
+			 document.getElementById("analyze_get_l_status").click(); }}
+    </script>
+    {% endblock %}
+
+</head>
+
+<body onload="update_analyzer()">
+    <h2>TexasHoldem HoleHand Probability Analysis</h1>
+<div id=sidebar>
+<br/>
+<h3 id="sb_title">Job Options</h3>
+	<ul>
+		<li><a href="/gamesim/"  >Create Simulation</a></li>
+		<li><a href="/gamesim/job_queue/" >Simulation Queue</a></li>
+		<li><a href="/gamesim/job_dispatcher/ ">Simulation Dispatcher</a></li>		
+		<li><a href="/gamesim/query_jobs/" >Create Analysis</a></li>
+        <li><a href="/gamesim/analyze_queue">Analysis Queue</a></li>
+		<li><a href="/gamesim/analyzer_dispatcher/" >Analysis Dispatcher</a></li>        				
+		<li><a href="/gamesim/initialize_sim/">Initialize Simulation</a></li>
+	</ul>       
+
+</div>
+
+<div id=content>
+{% block content %}
+
+<br/>
+
+<b id="analyze_job" ></b><br />
+<b id="analyze_dispatcher_status">Job Dispatcher is: {{ dispatcher_status1.status }}</b><br/>
+<b id="analyze_dispatcher_time">Job has ran for: </b><br />
+<br />
+<button id="analyze_reset_dispatch" type="button">Reset Dispatcher</button>
+<br />
+<br />
+
+<table id="analyze_update"> 
+	
+	<tbody id="tbody">
+	</tbody>
+</table>
+
+<button id="analyze_get_status"  data-analyzeid="{{ dispatcher_status1.id}}" type="button" 
+	class="{{ dispatcher_status1.status }}" hidden="hidden"  >Status</button>
+<button id="analyze_get_l_status"  type="button" hidden="hidden"  > Analyzer Status</button>
+{% endblock %}
+
+</div>
+<script src="{% static 'js/jquery-2.1.4.js' %}"></script>    
+<script src="{% static 'js/gamesim-ajax1.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+</body>
+
+</html>
