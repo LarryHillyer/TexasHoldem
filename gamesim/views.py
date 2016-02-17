@@ -3,10 +3,11 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 
+
 from gamesim.models import Simulation_Job , python_scripts, cards, hands, \
     hole_hands, players,  dispatcher_time, dispatcher_status, loop_status, \
     dispatcher_time2, dispatcher_status2, finished_jobs, analyzed_jobs, \
-    analyze_job_status
+    analyze_job_status, grand_summary_data
 
 from gamesim.forms import Simulation_Job_Form1, Simulation_Job_Form2, \
     dispatcher_status_form, dispatcher_status2_form
@@ -343,6 +344,8 @@ class initialize_sim(APIView):
             hands1.delete()
             hole_hands1 = hole_hands.objects.all()
             hole_hands1.delete()
+            grand_summary = grand_summary_data.objects.all()
+            grand_summary.delete()
         except:
             raise Http404
      
@@ -415,7 +418,8 @@ class analyze(APIView):
         summary_data['card_rank_numbers'] = card_rank_numbers    
         summary_data['hand_types'] = hand_types
         summary_data['hand_type_ranks'] = hand_type_ranks    
-        summary_data['permutations'] = permutations        
+        summary_data['permutations'] = permutations
+        
         summary_data['total_number_of_games2'] = 0    
         summary_data['player_wins_total'] = player_wins
         summary_data['player_hands_total'] = player_hands
@@ -564,7 +568,55 @@ class analyze(APIView):
                 summary_data['hole_hand_rel_probs2'][holeHand] = 0           
         return summary_data
         
-     
+    def findLatestJob(self, finished_job_list):
+        first_job_name = finished_job_list[0]
+        first_job = Simulation_Job.objects.get(job_name=first_job_name)
+        max_job_time = first_job.finish_time
+        latest_job = first_job
+        for i, job_name in enumerate(finished_job_list,1):
+            job = Simulation_Job.objects.get(job_name=job_name)
+            if (job.finish_time > max_job_time):
+                max_job_time = job.finish_time
+                latest_job = job
+        return latest_job
+        
+    def getGrandSummaryData(self, latest_job, summary_data):
+        grand_total_number_of_games = 0
+        for games in latest_job.summary_data['player_wins_grand_total'].values():
+            grand_total_number_of_games = grand_total_number_of_games + games
+            
+        summary_data['grand_total_number_of_games'] = grand_total_number_of_games    
+        summary_data['player_wins_grand_total'] = \
+            latest_job.summary_data['player_wins_grand_total']
+        #summary_data['player_hands_total'] = player_hands_total
+        summary_data['player_grand_probs'] = \
+            latest_job.summary_data['player_grand_probs']
+        summary_data['hand_type_wins_grand_total'] = \
+            latest_job.summary_data['hand_type_wins_grand_total']
+        summary_data['hand_type_hands_grand_total'] = \
+            latest_job.summary_data['hand_type_hands_grand_total']
+        summary_data['hand_type_grand_probs'] = \
+            latest_job.summary_data['hand_type_grand_probs']
+        summary_data['hand_type_grand_probs2'] = \
+            latest_job.summary_data['hand_type_grand_probs2']
+        summary_data['hole_hand_wins_grand_total'] = \
+            latest_job.summary_data['hole_hand_wins_grand_total']
+        summary_data['hole_hand_tied_wins_grand_total'] = \
+            latest_job.summary_data['hole_hand_tied_wins_grand_total']
+        summary_data['hole_hand_hands_grand_total'] = \
+            latest_job.summary_data['hole_hand_hands_grand_total']
+        summary_data['hole_hand_grand_probs'] = \
+            latest_job.summary_data['hole_hand_grand_probs']
+        summary_data['hole_hand_grand_probs2'] = \
+            latest_job.summary_data['hole_hand_grand_probs2']
+        summary_data['hole_hand_norm_grand_probs'] = \
+            latest_job.summary_data['hole_hand_norm_grand_probs']
+        summary_data['hole_hand_rel_grand_probs'] = \
+            latest_job.summary_data['hole_hand_rel_grand_probs']
+        summary_data['hole_hand_rel_grand_probs2'] = \
+            latest_job.summary_data['hole_hand_rel_grand_probs2']
+        return summary_data
+        
     def post(self, request):
         
         finished_job_list2 = finished_jobs.objects.all()
@@ -591,7 +643,11 @@ class analyze(APIView):
         summary_data = self.putHandTypeProbs(summary_data)
         summary_data = self.putHoleHandProbs(summary_data)
         summary_data = self.putHoleHandRelProbs(summary_data)
-        print(summary_data['player_probs'])
+        latest_job = self.findLatestJob(sim_job_names)
+        print(latest_job)
+        summary_data = self.getGrandSummaryData(latest_job, summary_data)
+        
+        print(summary_data['player_grand_probs'])
         analyze_job1 = analyzed_jobs(job_name = 'analyze', sim_job_names = \
             json.dumps(sim_job_names), num_players = str(num_players), \
             summary_data = json.dumps(summary_data), run_time = \

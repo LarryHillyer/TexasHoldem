@@ -8,6 +8,7 @@ import json
 import mysql.connector
 from random import shuffle
 
+
 def set_global_sql_variables():
     try:
         cnx = mysql.connector.connect(user=db_params['username'], password = \
@@ -191,16 +192,19 @@ def get_player_counters():
 
     return player_wins, player_hands
     
-def get_players_grand_total():
+def get_players_grand_total(num_players):
     try:
         cnx = mysql.connector.connect(user=db_params['username'], password = \
             db_params['password'], database= db_params['database'])           
         cur = cnx.cursor()
 
         select_players = ("select player_wins_total, player_hands_total "
-                    "from gamesim_grand_summary_data;")
+                    "from gamesim_grand_summary_data where "
+                    "num_players = %(num_players)s;")
                     
-        cur.execute(select_players)
+        insert_data = {'num_players':num_players}
+                    
+        cur.execute(select_players, insert_data)
         players1 = cur.fetchone()
         player_wins_grand_total = json.loads(players1[0])
         player_hands_grand_total = json.loads(players1[1])       
@@ -256,16 +260,19 @@ def get_hand_counters():
         
     return hand_type_wins, hand_type_hands
     
-def get_hand_type_grand_total():
+def get_hand_type_grand_total(num_players):
     try:
         cnx = mysql.connector.connect(user=db_params['username'], password = \
             db_params['password'], database= db_params['database'])           
         cur = cnx.cursor()
 
         select_hands = ("select hand_type_wins_total, hand_type_hands_total "
-                    "from gamesim_grand_summary_data;")
+                    "from gamesim_grand_summary_data where "
+                    "num_players = %(num_players)s ;")
+                    
+        insert_data = {'num_players':num_players}
                 
-        cur.execute(select_hands)
+        cur.execute(select_hands, insert_data)
         hands1 = cur.fetchone()
         hand_type_wins_grand_total = json.loads(hands1[0])
         hand_type_hands_grand_total = json.loads(hands1[1])
@@ -318,7 +325,7 @@ def get_hole_hand_counters():
         
     return hole_hand_wins, hole_hand_hands, hole_hand_tied_wins
     
-def get_hole_hand_grand_total():
+def get_hole_hand_grand_total(num_players):
     try:
         cnx = mysql.connector.connect(user=db_params['username'], password = \
             db_params['password'], database= db_params['database'])           
@@ -326,9 +333,12 @@ def get_hole_hand_grand_total():
         
         select_hole_hands = ("select hole_hand_wins_total, "
             "hole_hand_hands_total, hole_hand_tied_wins_total from "
-            "gamesim_grand_summary_data;")
+            "gamesim_grand_summary_data where "
+            "num_players = %(num_players)s;")
         
-        cur.execute(select_hole_hands)
+        insert_data = {'num_players':num_players}        
+        
+        cur.execute(select_hole_hands, insert_data)
         hole_hands1 = cur.fetchone()
         hole_hand_wins_grand_total = json.loads(hole_hands1[0])
         hole_hand_hands_grand_total = json.loads(hole_hands1[1])
@@ -536,6 +546,7 @@ def get_running_job():
         print(e.args[1])
         cnx.close()
     return running_job[3]
+    
 def getGameParameters():
     
     numberOfTieGames = 0
@@ -653,7 +664,107 @@ def getRiverCard(cnt, RiverCard, Players, PlayerCards, Deck):
 db_params = {'username':'texasholdem', 'password':'Texasholdem123', \
     'database':'texasholdem_db'}
 
+###############################################################################
+############### Calulate and Put Grand Total Aggreates ########################
+###############################################################################
 
 
+
+def combinePlayerTotals(num_players, player_wins_total, \
+    player_hands_total, player_wins_grand_total, player_hands_grand_total):
     
+    for player in player_wins_total.keys():
+        player_wins_grand_total[player] = player_wins_grand_total[player] + \
+            player_wins_total[player]
+        player_hands_grand_total[player] = player_hands_grand_total[player] + \
+            player_hands_total[player]
+            
+    return player_wins_grand_total, player_hands_grand_total
     
+def combineHandTypeTotals(num_players, hand_types, hand_type_wins_total, \
+    hand_type_hands_total, hand_type_wins_grand_total, \
+    hand_type_hands_grand_total):
+    
+    for i, hand_type in enumerate(hand_types):
+        hand_type_wins_grand_total[hand_type] = hand_type_wins_grand_total[hand_type] +\
+            hand_type_wins_total[hand_type]
+        hand_type_hands_grand_total[hand_type] = hand_type_hands_grand_total[hand_type] +\
+            hand_type_hands_total[hand_type]
+            
+    return hand_type_wins_grand_total, hand_type_hands_grand_total
+    
+def combineHoleHandTotals(num_players, permutations, hole_hands_wins_total, \
+    hole_hands_hands_total, hole_hands_tied_wins_total, \
+    hole_hands_wins_grand_total, hole_hands_hands_grand_total, \
+    hole_hands_tied_wins_grand_total):
+    
+    for i, permutation in enumerate(permutations):
+        
+            hole_hands_wins_grand_total[permutation] = \
+                hole_hands_wins_total[permutation] + \
+                + hole_hands_wins_total[permutation]
+            hole_hands_hands_grand_total[permutation] = \
+                hole_hands_hands_grand_total[permutation] + \
+                hole_hands_hands_total[permutation]
+            hole_hands_tied_wins_grand_total[permutation] = \
+                hole_hands_tied_wins_grand_total[permutation] + \
+                hole_hands_tied_wins_grand_total[permutation]
+            
+    return hole_hands_wins_grand_total, hole_hands_hands_grand_total, \
+        hole_hands_tied_wins_grand_total
+
+def putGrandTotals(num_players, player_wins_grand_total, \
+    player_hands_grand_total, hand_type_wins_grand_total, \
+    hand_type_hands_grand_total, hole_hands_wins_grand_total, \
+    hole_hands_hands_grand_total, hole_hands_tied_wins_grand_total):
+         
+        try:
+            cnx = mysql.connector.connect(user=db_params['username'], password = \
+                db_params['password'], database= db_params['database'])    
+            cur = cnx.cursor()
+            
+            """
+            select_players = ("select num_players from gamesim_grand_summary_data;")
+            cur.execute(select_players)
+            id1 = cur.fetchone()
+            id1 = id1[0]
+            """
+            update_grand_summary = ("update gamesim_grand_summary_data "
+              "set player_wins_total = %(player_wins_total)s, "
+              "player_hands_total = %(player_hands_total)s, "
+              "hand_type_wins_total = %(hand_type_wins_total)s, "
+              "hand_type_hands_total = %(hand_type_hands_total)s, "
+              "hole_hand_wins_total = %(hole_hand_wins_total)s, "
+              "hole_hand_hands_total = %(hole_hand_hands_total)s, "
+              "hole_hand_tied_wins_total = %(hole_hand_tied_wins_total)s "
+              "where num_players = %(num_players)s;")
+                        
+            insert_data = {'num_players':num_players,\
+              'player_wins_total': \
+                  json.dumps(player_wins_grand_total),\
+              'player_hands_total': \
+                  json.dumps(player_hands_grand_total), \
+              'hand_type_wins_total': \
+                  json.dumps(hand_type_wins_grand_total), \
+              'hand_type_hands_total': \
+                  json.dumps(hand_type_hands_grand_total), \
+              'hole_hand_wins_total': \
+                  json.dumps(hole_hands_wins_grand_total), \
+              'hole_hand_hands_total': \
+                  json.dumps(hole_hands_hands_grand_total), \
+              'hole_hand_tied_wins_total': \
+                  json.dumps(hole_hands_tied_wins_grand_total)}
+                   
+            cur.execute(update_grand_summary, insert_data)
+            cnx.commit()
+            
+        except mysql.connector.Error as e:
+            print(e.args[0])
+            print(e.args[1])
+            cnx.close()
+        
+def getGrandTotalGames(total_number_of_games2, player_wins_grand_total):
+    grand_total_number_of_games = 0
+    for wins in player_wins_grand_total.values():
+        grand_total_number_of_games = grand_total_number_of_games + wins
+    return grand_total_number_of_games

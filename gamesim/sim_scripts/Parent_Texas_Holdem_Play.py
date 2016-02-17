@@ -170,6 +170,12 @@ def putPlayerProbs(total_number_of_games2):
     for player in player_wins.keys():
         player_probs[player] = player_wins_total[player]/total_number_of_games2  
     return
+
+def putPlayerGrandProbs(grand_total_number_of_games):
+    for player in player_wins_grand_total.keys():
+        player_grand_probs[player] = player_wins_grand_total[player] / \
+            grand_total_number_of_games  
+    return
     
 def putHandTypeProbs(total_number_of_games2):
     for handType in hand_type_wins.keys():
@@ -180,6 +186,18 @@ def putHandTypeProbs(total_number_of_games2):
             hand_type_hands_total[handType]
         else:
             hand_type_probs2[handType] = 0
+    return
+
+def putHandTypeGrandProbs(grand_total_number_of_games):
+    for handType in hand_type_wins_grand_total.keys():
+        hand_type_grand_probs[handType] = hand_type_wins_grand_total[handType] / \
+            grand_total_number_of_games
+    
+        if hand_type_hands_grand_total[handType] > 0:
+            hand_type_grand_probs2[handType] = hand_type_wins_grand_total[handType] / \
+            hand_type_hands_grand_total[handType]
+        else:
+            hand_type_grand_probs2[handType] = 0
     return
     
 def putHoleHandProbs(total_number_of_games2):
@@ -207,9 +225,43 @@ def putHoleHandProbs(total_number_of_games2):
             hole_hand_probs[holeHand]/12 
     return
     
+def putHoleHandGrandProbs(grand_total_number_of_games):
+    for holeHand in permutations:
+        hole_hand_grand_probs[holeHand] = \
+            (hole_hand_wins_grand_total[holeHand] \
+            + hole_hand_tied_wins_grand_total[holeHand]) / \
+            grand_total_number_of_games
+    
+        if hole_hand_hands_grand_total[holeHand] > 0:    
+            hole_hand_grand_probs2[holeHand] = \
+                (hole_hand_wins_grand_total[holeHand] + \
+                hole_hand_tied_wins_grand_total[holeHand]) / \
+                hole_hand_hands_grand_total[holeHand]
+        else:
+            hole_hand_grand_probs2[holeHand] = 0        
+    
+        if len(holeHand) == 2:
+            hole_hand_norm_grand_probs[holeHand] = \
+            hole_hand_grand_probs[holeHand]/6
+        elif holeHand[2:] == 'S':
+            hole_hand_norm_grand_probs[holeHand] = \
+            hole_hand_grand_probs[holeHand]/4
+        elif holeHand[2:] == 'NS':
+            hole_hand_norm_grand_probs[holeHand] = \
+            hole_hand_grand_probs[holeHand]/12 
+    return    
+    
 def getMinNormProb():
     min_norm_prob_value = np.min(list(hole_hand_norm_probs.values()))
     for name, value in hole_hand_norm_probs.items():
+        if value == min_norm_prob_value:
+            min_norm_prob_key = name
+            break
+    return min_norm_prob_key
+    
+def getMinNormGrandProb():
+    min_norm_prob_value = np.min(list(hole_hand_norm_grand_probs.values()))
+    for name, value in hole_hand_norm_grand_probs.items():
         if value == min_norm_prob_value:
             min_norm_prob_key = name
             break
@@ -233,6 +285,24 @@ def putHoleHandRelProbs():
             hole_hand_rel_probs2[holeHand] = 0           
     return
     
+def putHoleHandRelGrandProbs():
+    for holeHand in permutations:
+        minKey = getMinNormGrandProb()
+        if hole_hand_norm_grand_probs[minKey] > 0:    
+            hole_hand_rel_grand_probs[holeHand] = \
+                hole_hand_norm_grand_probs[holeHand] / \
+                hole_hand_norm_grand_probs[minKey]
+        else:
+            hole_hand_rel_grand_probs[holeHand] = 0        
+
+        if hole_hand_grand_probs2[minKey] > 0:    
+            hole_hand_rel_grand_probs2[holeHand] = \
+                hole_hand_grand_probs2[holeHand] / \
+                hole_hand_grand_probs2[minKey]    
+        else:
+            hole_hand_rel_grand_probs2[holeHand] = 0           
+    return    
+    
 def sumProbs():
     sum_of_hand_type_probs = np.sum(list(hand_type_probs.values()))           
     sum_of_player_probs = np.sum(list(player_probs.values()))
@@ -249,7 +319,8 @@ def putSummaryData(num_Players,num_Games):
     summary_data['card_rank_numbers'] = card_rank_numbers    
     summary_data['hand_types'] = hand_types
     summary_data['hand_type_ranks'] = hand_type_ranks    
-    summary_data['permutations'] = permutations        
+    summary_data['permutations'] = permutations
+        
     summary_data['total_number_of_games2'] = total_number_of_games2    
     summary_data['player_wins_total'] = player_wins_total
     summary_data['player_hands_total'] = player_hands_total
@@ -266,6 +337,23 @@ def putSummaryData(num_Players,num_Games):
     summary_data['hole_hand_norm_probs'] = hole_hand_norm_probs
     summary_data['hole_hand_rel_probs'] = hole_hand_rel_probs
     summary_data['hole_hand_rel_probs2'] = hole_hand_rel_probs2
+    
+    summary_data['grand_total_number_of_games'] = grand_total_number_of_games    
+    summary_data['player_wins_grand_total'] = player_wins_grand_total
+    #summary_data['player_hands_total'] = player_hands_total
+    summary_data['player_grand_probs'] = player_grand_probs
+    summary_data['hand_type_wins_grand_total'] = hand_type_wins_grand_total
+    summary_data['hand_type_hands_grand_total'] = hand_type_hands_grand_total
+    summary_data['hand_type_grand_probs'] = hand_type_grand_probs
+    summary_data['hand_type_grand_probs2'] = hand_type_grand_probs2
+    summary_data['hole_hand_wins_grand_total'] = hole_hand_wins_grand_total
+    summary_data['hole_hand_tied_wins_grand_total'] = hole_hand_tied_wins_grand_total
+    summary_data['hole_hand_hands_grand_total'] = hole_hand_hands_grand_total
+    summary_data['hole_hand_grand_probs'] = hole_hand_grand_probs
+    summary_data['hole_hand_grand_probs2'] = hole_hand_grand_probs2
+    summary_data['hole_hand_norm_grand_probs'] = hole_hand_norm_grand_probs
+    summary_data['hole_hand_rel_grand_probs'] = hole_hand_rel_grand_probs
+    summary_data['hole_hand_rel_grand_probs2'] = hole_hand_rel_grand_probs2
     
     try:
         cnx = mysql.connector.connect(user=db_params['username'], password = \
@@ -410,13 +498,13 @@ hand_types, hand_type_ranks = th_i.get_hands()
 permutations = th_i.get_hole_hands()
 
 player_wins_grand_total, player_hands_grand_total = \
-    th_i.get_players_grand_total()
+    th_i.get_players_grand_total(str(num_players))
     
 hand_type_wins_grand_total, hand_type_hands_grand_total = \
-    th_i.get_hand_type_grand_total()
+    th_i.get_hand_type_grand_total(str(num_players))
     
 hole_hand_wins_grand_total, hole_hand_hands_grand_total, \
-    hole_hand_tied_wins_grand_total = th_i.get_hole_hand_grand_total()
+    hole_hand_tied_wins_grand_total = th_i.get_hole_hand_grand_total(str(num_players))
     
 player_wins_total, player_hands_total, hand_type_wins_total, hand_type_hands_total, \
     hole_hand_wins_total, hole_hand_hands_total, \
@@ -426,6 +514,11 @@ player_probs, hand_type_probs, hand_type_probs2, hole_hand_probs, \
     hole_hand_probs2, hole_hand_norm_probs, \
     hole_hand_rel_probs, hole_hand_rel_probs2 = \
     th_i.getInitialProbLists()
+    
+player_grand_probs, hand_type_grand_probs, hand_type_grand_probs2, \
+    hole_hand_grand_probs, hole_hand_grand_probs2, \
+    hole_hand_norm_grand_probs, hole_hand_rel_grand_probs, \
+    hole_hand_rel_grand_probs2 = th_i.getInitialProbLists()
     
 total_number_of_games2 = 0
 
@@ -463,10 +556,39 @@ putHoleHandRelProbs()
         
 sum_of_hand_type_probs, sum_of_player_probs, sum_of_hole_hand_probs \
     = sumProbs()
+    
 
-putSummaryData(str(num_players), str(num_cpus*num_loops*\
-    num_games))
+player_wins_grand_total, player_hands_grand_total  \
+    = th_i.combinePlayerTotals(str(num_players), player_wins_total, \
+    player_hands_total, player_wins_grand_total, player_hands_grand_total)
 
+hand_type_wins_grand_total, hand_type_hands_grand_total \
+    = th_i.combineHandTypeTotals(str(num_players), hand_types, \
+    hand_type_wins_total, hand_type_hands_total, hand_type_wins_grand_total, \
+    hand_type_hands_grand_total)
+    
+hole_hand_wins_grand_total, hole_hand_hands_grand_total, \
+    hole_hand_tied_wins_grand_total = \
+    th_i.combineHoleHandTotals(str(num_players), permutations, \
+    hole_hand_wins_total, hole_hand_hands_total, hole_hand_tied_wins_total, \
+    hole_hand_wins_grand_total, hole_hand_hands_grand_total, \
+    hole_hand_wins_grand_total)
+    
+grand_total_number_of_games = th_i.getGrandTotalGames(total_number_of_games2, \
+    player_wins_grand_total)
+    
+putPlayerGrandProbs(grand_total_number_of_games)
+putHandTypeGrandProbs(grand_total_number_of_games)
+putHoleHandGrandProbs(grand_total_number_of_games)
+putHoleHandRelGrandProbs()
+
+putSummaryData(str(num_players), str(num_cpus*num_loops*num_games))
+
+       
+th_i.putGrandTotals(str(num_players),player_wins_grand_total, \
+    player_hands_grand_total, hand_type_wins_grand_total, \
+    hand_type_hands_grand_total, hole_hand_wins_grand_total, \
+    hole_hand_hands_grand_total, hole_hand_tied_wins_grand_total)
 
 end1 = time.time()
 print('Finished Simulation in % 25.3f seconds' % (end1 - start1))

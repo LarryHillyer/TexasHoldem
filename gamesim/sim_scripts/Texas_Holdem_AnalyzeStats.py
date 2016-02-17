@@ -8,7 +8,7 @@ import json
 import numpy as np
 import sys
 import os
-
+import time
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "texasholdem1.settings")
 
 import mysql.connector
@@ -126,6 +126,7 @@ def getSummaryData(job_name):
     hand_types = summary_data['hand_types']
     hand_type_ranks = summary_data['hand_type_ranks']
     permutations = summary_data['permutations']
+    
     total_number_of_games2 = summary_data['total_number_of_games2']
     player_wins_total = summary_data['player_wins_total']
     #player_hands_total = summary_data['player_hands_total']  
@@ -142,6 +143,23 @@ def getSummaryData(job_name):
     hole_hand_norm_probs = summary_data['hole_hand_norm_probs']
     hole_hand_rel_probs = summary_data['hole_hand_rel_probs']
     hole_hand_rel_probs2 = summary_data['hole_hand_rel_probs2']
+    
+    grand_total_number_of_games = summary_data['grand_total_number_of_games']
+    player_wins_grand_total = summary_data['player_wins_grand_total']
+    #player_hands_total = summary_data['player_hands_total']  
+    player_grand_probs = summary_data['player_grand_probs']
+    hand_type_wins_grand_total = summary_data['hand_type_wins_grand_total']
+    hand_type_hands_grand_total = summary_data['hand_type_hands_grand_total']
+    hand_type_grand_probs = summary_data['hand_type_grand_probs']
+    hand_type_grand_probs2 = summary_data['hand_type_grand_probs2']
+    hole_hand_wins_grand_total = summary_data['hole_hand_wins_grand_total']
+    hole_hand_tied_wins_grand_total = summary_data['hole_hand_tied_wins_grand_total']
+    hole_hand_hands_grand_total = summary_data['hole_hand_hands_grand_total']
+    hole_hand_grand_probs = summary_data['hole_hand_grand_probs']
+    hole_hand_grand_probs2 = summary_data['hole_hand_grand_probs2']
+    hole_hand_norm_grand_probs = summary_data['hole_hand_norm_grand_probs']
+    hole_hand_rel_grand_probs = summary_data['hole_hand_rel_grand_probs']
+    hole_hand_rel_grand_probs2 = summary_data['hole_hand_rel_grand_probs2']
         
     return players, card_suits, card_ranks, card_rank_numbers, hand_types, \
         hand_type_ranks, permutations, total_number_of_games2, \
@@ -149,13 +167,18 @@ def getSummaryData(job_name):
         hand_type_hands_total, hand_type_probs, hand_type_probs2, \
         hole_hand_wins_total, hole_hand_tied_wins_total, \
         hole_hand_hands_total, hole_hand_probs, hole_hand_probs2, \
-        hole_hand_norm_probs, hole_hand_rel_probs, hole_hand_rel_probs2
-        
+        hole_hand_norm_probs, hole_hand_rel_probs, hole_hand_rel_probs2, \
+        grand_total_number_of_games, player_wins_grand_total, player_grand_probs, \
+        hand_type_wins_grand_total, hand_type_hands_grand_total, \
+        hand_type_grand_probs, hand_type_grand_probs2, hole_hand_wins_grand_total, \
+        hole_hand_tied_wins_grand_total, hole_hand_hands_grand_total, \
+        hole_hand_grand_probs, hole_hand_grand_probs2, hole_hand_norm_grand_probs, \
+        hole_hand_rel_grand_probs, hole_hand_rel_grand_probs2
 ###############################################################################
 #######      Get Player List from Dictionary ##################################
 ###############################################################################
 
-def getPlayerList():
+def getPlayerList(player_probs):
     player_probs_list = [player_probs[player] for player in player_probs.keys()]
     return player_probs_list 
 
@@ -182,7 +205,7 @@ def getHandTypeProbsSorted():
             
     return hand_type_keys_sorted, hand_type_probs_sorted, hand_type_probs2_sorted
     
-def getWinningHandProbs():
+def getWinningHandProbs(hand_type_probs, hand_type_probs2):
     hand_type_cum_probs_sorted = []   
     for i, handType in enumerate(hand_types):
         if i == 0:
@@ -335,7 +358,7 @@ def getPercentPossibleWins(rel_probs_keys_sorted, hole_hand_probs_sorted):
     
 ###############################################################################
 ############   Player Probability Pie Chart ###################################
-def getPlayerPieChart():
+def getPlayerPieChart(player_probs, player_probs_list, number_of_games, fig_type):
     player_labels=list(player_probs.keys())
     colors=['lightcoral','blue', 'g', 'r', 'c', 'm', 'y', 'orange', 'w']
 
@@ -347,18 +370,21 @@ def getPlayerPieChart():
     
     ax1.set_title('Player Probabilty')
 
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
 
     #fig1.show()
-    fig1.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_PPC')
-    
+    fig1.savefig(str(len(players))+'P_'+str(number_of_games)+'G_PPC' + fig_type)
+    fig1.clf()
     return
     
 ###############################################################################
 ########### HandType Probability Bar Chart ####################################
 ###############################################################################
-def getHandTypeBarChart():
+def getHandTypeBarChart(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
+    average_winning_hand_type_prob_sorted1, hand_type_cum_probs_sorted1, \
+    fig_type, number_of_games):
+        
     index = np.arange(len(hand_types))
     bar_width = .2
         
@@ -369,16 +395,16 @@ def getHandTypeBarChart():
         + str(len(players)) + ' Players')
     ax2 = fig2.add_axes([0.075, 0.2, 0.85, 0.7])
    
-    ax2.bar(left = index, width = bar_width, height = hand_type_probs_sorted, \
+    ax2.bar(left = index, width = bar_width, height = hand_type_probs_sorted1, \
         color = 'b', label='HandType Winning Prob')
     ax2.bar(left = index + bar_width, width = bar_width, \
-        height = hand_type_probs2_sorted, label='Prob of Winning the Winning HandType', \
+        height = hand_type_probs2_sorted1, label='Prob of Winning the Winning HandType', \
         color = 'r')
     ax2.bar(left = index + 2 * bar_width, width = bar_width, \
-        height = average_winning_hand_type_prob_sorted, label= \
+        height = average_winning_hand_type_prob_sorted1, label= \
         'Average Winning HandType Probability', color = 'g') 
     ax2.bar(left=index + 3 * bar_width, width = bar_width, \
-        height = hand_type_cum_probs_sorted, label='Cumulative Probability of HandType', \
+        height = hand_type_cum_probs_sorted1, label='Cumulative Probability of HandType', \
         color = 'y')
 
 
@@ -394,15 +420,19 @@ def getHandTypeBarChart():
        label.set_fontsize(9)
        label.set_color('black')
     
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
        str(len(players)) + ' Players')
 
     #fig2.show()
-    fig2.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_HTPBC')
+    fig2.savefig(str(len(players))+'P_'+str(number_of_games)+'G_HTPBC' + \
+    fig_type)
     
-    return
+    plt.clf()
     
-def getHandTypeProbTable():
+def getHandTypeProbTable(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
+    average_winning_hand_type_prob_sorted1, hand_type_cum_probs_sorted1, \
+    fig_type, number_of_games):
+        
     fig13 = plt.figure('HTT')
 
     ax13 = fig13.add_axes([0.05,.925,.9,.001], label = 'ax13')
@@ -417,10 +447,10 @@ def getHandTypeProbTable():
 
     data0 = []
     for i, handType in enumerate(hand_types):
-        data0_0 = [handType,'%1.3f' % hand_type_probs_sorted[i],'%1.3f' % \
-            hand_type_probs2_sorted[i],'%1.3f' % \
-            average_winning_hand_type_prob_sorted[i],'%1.3f' % \
-            hand_type_cum_probs_sorted[i]]
+        data0_0 = [handType,'%1.3f' % hand_type_probs_sorted1[i],'%1.3f' % \
+            hand_type_probs2_sorted1[i],'%1.3f' % \
+            average_winning_hand_type_prob_sorted1[i],'%1.3f' % \
+            hand_type_cum_probs_sorted1[i]]
         data0.append(data0_0)
 
     ht1 = plt.table(colLabels=clabels, cellText = data0, loc = 'bottom',\
@@ -428,13 +458,14 @@ def getHandTypeProbTable():
     ax13.add_table(ht1)
 
     #fig13.show()
-    fig13.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_HTT')
+    fig13.savefig(str(len(players))+'P_'+str(number_of_games)+'G_HTT'+ fig_type)
     
-    return
-
+    plt.clf()
+    
 ###############################################################################
 ##############  Relative Probaility Surface Plot ##############################
 ###############################################################################
+    
 def getSurfacePlot():
     fig4 = plt.figure('Relative Probability by HoleHand')
     ax4= fig4.gca(projection='3d')
@@ -1003,22 +1034,53 @@ players, card_suits, card_ranks, card_rank_numbers, hand_types, \
     hand_type_probs, hand_type_probs2, hole_hand_wins_total, \
     hole_hand_tied_wins_total, hole_hand_hands_total, hole_hand_probs, \
     hole_hand_probs2, hole_hand_norm_probs, hole_hand_rel_probs, \
-    hole_hand_rel_probs2 = getSummaryData(job_name)
+    hole_hand_rel_probs2, grand_total_number_of_games, player_wins_grand_total, \
+    player_grand_probs, hand_type_wins_grand_total, hand_type_hands_grand_total, \
+    hand_type_grand_probs, hand_type_grand_probs2, hole_hand_wins_grand_total, \
+    hole_hand_tied_wins_grand_total, hole_hand_hands_grand_total, hole_hand_grand_probs, \
+    hole_hand_grand_probs2, hole_hand_norm_grand_probs, hole_hand_rel_grand_probs, \
+    hole_hand_rel_grand_probs2 = getSummaryData(job_name)
     
-player_probs_list = getPlayerList()
+player_probs_list = getPlayerList(player_probs)
+player_grand_probs_list = getPlayerList(player_grand_probs)
 
 update_status(1, job_name)
-getPlayerPieChart()    
+
+getPlayerPieChart(player_probs, player_probs_list, total_number_of_games2, \
+    '_S')
+
+getPlayerPieChart(player_grand_probs, player_grand_probs_list, \
+    grand_total_number_of_games, '_GS')
+    
 update_status(2, job_name)
 
 hand_type_probs_sorted, hand_type_probs2_sorted, \
     average_winning_hand_type_prob_sorted, hand_type_cum_probs_sorted = \
-    getWinningHandProbs()
+    getWinningHandProbs(hand_type_probs, hand_type_probs2)
     
-getHandTypeBarChart()
+hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
+    average_winning_hand_type_grand_prob_sorted, \
+    hand_type_cum_grand_probs_sorted = \
+    getWinningHandProbs(hand_type_grand_probs, hand_type_grand_probs2)
+    
+getHandTypeBarChart(hand_type_probs_sorted, hand_type_probs2_sorted, \
+    average_winning_hand_type_prob_sorted, hand_type_cum_probs_sorted, \
+    '_S', total_number_of_games2)    
+    
+getHandTypeBarChart(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
+    average_winning_hand_type_grand_prob_sorted, hand_type_cum_grand_probs_sorted, \
+    '_GS', grand_total_number_of_games)
+
 update_status(3, job_name)
 
-getHandTypeProbTable()
+getHandTypeProbTable(hand_type_probs_sorted, hand_type_probs2_sorted, \
+    average_winning_hand_type_prob_sorted, hand_type_cum_probs_sorted, \
+    '_S', total_number_of_games2)
+
+getHandTypeProbTable(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
+    average_winning_hand_type_grand_prob_sorted, hand_type_cum_grand_probs_sorted, \
+    '_GS', grand_total_number_of_games)
+    
 update_status(4, job_name)
 
 low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\

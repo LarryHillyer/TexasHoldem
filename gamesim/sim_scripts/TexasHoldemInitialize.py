@@ -313,9 +313,9 @@ initialCounters = {}
 putInitialData()
 putInitialCounters()
 
-"""
+
 putInitialCounters2()
-"""
+
 
 for num_players in range(2,8):
     put_grand_summary_data(num_players)
