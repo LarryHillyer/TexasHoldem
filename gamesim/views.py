@@ -127,6 +127,7 @@ class index(APIView):
             sim.save()
             sim.job_name = 'sim' + str(sim.id)
             sim.save()
+
             return HttpResponseRedirect(reverse('gamesim:index'))
 
 class job_queue(APIView):
