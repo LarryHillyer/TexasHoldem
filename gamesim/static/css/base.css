@@ -11,7 +11,7 @@ margin:10px;
 .title {
 text-align:left;
 margin:20px;
-color: whitesmoke;
+color: darkslateblue;
 }
 
 body {
@@ -20,9 +20,13 @@ background-image:url("/static/img/Holdem.jpg")
 }
 
 .sidebar {
-    color:whitesmoke;
+    color:darkslateblue;
 }
 
 .content {
-    color: whitesmoke;
+    color: darkslateblue;
+}
+
+.dispatcher-content {
+    color:darkslateblue;
 }
