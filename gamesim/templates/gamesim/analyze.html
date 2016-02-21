@@ -9,36 +9,40 @@
 </head>
 
 <body>
-    {% block content %} {% if finished_job_list %}
-    <h3>Select Jobs to Analyze</h3> {% else %}
-    <h3>No Jobs ran in time period</h3> {% endif %}
-
-    <form action="{% url 'gamesim:analyze' %}" method="post">
+    {% block content %} 
         {% if finished_job_list %}
-        <div class="checkbox-group">
-            <ul>
-                <div class="parent-checkbox">
-                    <li class="selectall">
-                        <input id="selectall1" type="checkbox" name="job_names" value="all_jobs" checked="" /> Select All Jobs
-                        <br />
-                    </li>
-                </div>
+            <h3>Select Jobs to Analyze</h3> 
+        {% else %}
+            <h3>No Jobs ran in time period</h3> 
+        {% endif %}
+        
+        {% if finished_job_list %}
+            <form action="{% url 'gamesim:analyze' %}" method="post">
+                
+                <div class="checkbox-group">
+                    <ul>
+                        <div class="parent-checkbox">
+                            <li class="selectall">
+                                <input id="selectall1" type="checkbox" name="job_names" value="all_jobs" checked="" /> Select All Jobs
+                                <br />
+                            </li>
+                        </div>
 
-                <div class="child-checkbox">
-                    {% for job in finished_job_list %}
-                    <li class="selectone">
-                        <input class="checkbox1" name="job_names" type="checkbox" value="{{job.job_name}}" checked="" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="{% url 'gamesim:Finished_Job' job.id %}">{{ job.job_name }}</a>
-                    </li>
-                    {% endfor %}
+                        <div class="child-checkbox">
+                            {% for job in finished_job_list %}
+                            <li class="selectone">
+                                <input class="checkbox1" name="job_names" type="checkbox" value="{{job.job_name}}" checked="" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="{% url 'gamesim:Finished_Job' job.id %}">{{ job.job_name }}</a>
+                            </li>
+                            {% endfor %}
+                        </div>
+                    </ul>
+                    <br />
                 </div>
-            </ul>
-            <br />
-        </div>
-        <input id="submit_jobs" name="Submit1" type="submit" value="submit" />
-    </form>
-
-    {% endif %} {% endblock %}
+                <input id="submit_jobs" name="Submit1" type="submit" value="submit" />
+            </form>
+        {% endif %} 
+    {% endblock %}
 </body>
 
 </html>
