@@ -1,0 +1,6 @@
+<div>
+    {{test}}
+    <ul class="job-queue">
+        <li ng-repeat="job in pending_job_list"><a ui-sref="job({job_name: job.job_name})">{{job.job_name}}</a></li>
+    </ul>
+</div>

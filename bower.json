@@ -1,0 +1,25 @@
+{
+  "name": "TexasHoldem",
+  "homepage": "https://github.com/LarryHillyer/TexasHoldem",
+  "authors": [
+    "LarryHillyer <LarryHillyer@hotmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "bootstrap": "^3.3.6",
+    "angular-ui-router": "ui-router#^0.2.18",
+    "ui-bootstrap": "angular-ui-bootstrap#^1.1.2",
+    "jquery-ui": "^1.11.4"
+  }
+}

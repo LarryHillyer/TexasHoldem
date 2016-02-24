@@ -9,7 +9,7 @@ from gamesim.models import Simulation_Job , python_scripts, cards, hands, \
     dispatcher_time2, dispatcher_status2, finished_jobs, analyzed_jobs, \
     analyze_job_status, grand_summary_data
 
-from gamesim.forms import Simulation_Job_Form1, Simulation_Job_Form2, \
+from gamesim.forms import  Simulation_Job_Form2, \
     dispatcher_status_form, dispatcher_status2_form
     
 
@@ -58,21 +58,12 @@ except dispatcher_status.DoesNotExist:
     ds1.save()
     
 class index(APIView):
-    
-    def reset_dispatch(self, pk):
-        try:
-            ds1 = dispatcher_status.objects.get(pk=pk)
-            if ds1.status == 'Reset':
-                ds1.status = 'Stopped'
-                ds1.job_name = ''
-                ds1.save()
-                print('save')
-        except dispatcher_status.DoesNotExist:
-            ds1 = dispatcher_status.objects.all().delete()
-            ds1 = dispatcher_status(status = 'Stopped')
-            ds1.id = 1
-            ds1.save()
-
+ 
+    def get(self, request):
+        
+        return render(request,'gamesim/index.html') 
+                
+class get_sim_form_data(APIView):
     
     def get_job_object(self, pk):
         try:
@@ -94,8 +85,8 @@ class index(APIView):
             return loop_status.objects.all()
         except:
             raise Http404
-           
-    def get(self, request):
+    
+    def get(self,request):
         
         dispatcher_status1 = self.get_job_object(pk=1)
         if dispatcher_status1.status == 'Finished':
@@ -104,31 +95,87 @@ class index(APIView):
             
         loop_status1 = self.get_loop_status_objects()
         loop_status1.delete()
-            
-        context = {'num_players':'2', 'num_cpus':'3', 'num_loops':'10', \
-            'num_games':'1000', 'sim_dir': sim_dir,}
-
-        form = Simulation_Job_Form1(context)
-        return render(request,'gamesim/index.html', {'form': form})
-     
-    def post(self, request):
         
-        form = Simulation_Job_Form1(request.POST)        
-        if form.is_valid():
-            sim = Simulation_Job( job_name = 'sim', 
-                num_players = form.cleaned_data['num_players'], \
-                num_cpus = form.cleaned_data['num_cpus'], \
-                num_loops = form.cleaned_data['num_loops'], \
-                num_games = form.cleaned_data['num_games'], \
-                run_time = dt.datetime.now(pytz.utc), \
-                save_game_data = form.cleaned_data['save_game_data'], \
-                sim_dir = sim_dir)
+        sim_form_data = {'num_players':'2', 'num_cpus':'3', 'num_loops':'10', \
+            'num_games':'1000', 'sim_dir': sim_dir,}
+            
+        sim_form_data = json.dumps(sim_form_data)
+        print(sim_form_data)
+        return Response(sim_form_data)
+        
+class put_sim_form_data(APIView):
     
-            sim.save()
-            sim.job_name = 'sim' + str(sim.id)
-            sim.save()
-
-            return HttpResponseRedirect(reverse('gamesim:index'))
+    def post(self,request):
+        print(request.POST)
+        sim_form_data = request.POST['sim_form_data']
+        sim_form_data = json.loads(sim_form_data)
+        print(sim_form_data['num_games'])
+        #form = Simulation_Job_Form1(request.POST)
+                      
+        sim = Simulation_Job( job_name = 'sim', 
+            num_players = sim_form_data['num_players'], \
+            num_cpus = sim_form_data['num_cpus'], \
+            num_loops = sim_form_data['num_loops'], \
+            num_games = sim_form_data['num_games'], \
+            run_time = dt.datetime.now(pytz.utc), \
+            save_game_data = sim_form_data['save_game_data'], \
+            sim_dir = sim_form_data['sim_dir'])
+    
+        sim.save()
+        sim.job_name = 'sim' + str(sim.id)
+        sim.save()
+        return Response()
+        
+class get_pending_job_list(APIView):
+    
+    def get_sim_object(self, status):
+        try:
+            return Simulation_Job.objects.filter(status=status)
+        except Simulation_Job.DoesNotExist:
+            raise Http404
+            
+    def get_job_object(self, pk):
+        try:
+            ds1 = dispatcher_status.objects.get(pk=pk)
+            if ds1.status == 'Reset':
+                ds1.status = 'Stopped'
+                ds1.job_name = ''
+                ds1.save()           
+            return ds1
+        except:
+            ds1 = dispatcher_status.objects.all().delete()
+            ds1 = dispatcher_status(status = 'Stopped')
+            ds1.id = 1
+            ds1.save()
+            return ds1
+            
+    def get_loop_status_objects(self):
+        try:
+            return loop_status.objects.all()
+        except:
+            raise Http404
+                     
+    def get(self, request):
+        
+        pending_job_list = None
+        dispatch_status1 = self.get_job_object(pk=1)
+        if dispatch_status1.status == 'Stopped':
+            pending_job_list = self.get_sim_object(status = 'pending')
+        elif dispatch_status1.status == 'Finished':
+            dispatch_status1.status = 'Stopped'
+            dispatch_status1.save()
+            pending_job_list = self.get_sim_object(status = 'pending')            
+        
+        loop_status1 = self.get_loop_status_objects()
+        loop_status1.delete()        
+        
+        #form = Simulation_Job_Form2()
+        #context = {'pending_job_list':pending_job_list, 'form':form}
+        print(pending_job_list)
+        pending_job_list = Simulation_Job_Serializer(pending_job_list, many=True)
+        print(pending_job_list)
+        return Response(pending_job_list.data)
+        
 
 class job_queue(APIView):
     
@@ -960,8 +1007,6 @@ def details2(request,cpu2loopdata_id):
 def details3(request,cpu3loopdata_id):
     return HttpResponse("<h1>Simulation Details Page</h1>"
     "<p> You are looking at Cpu2 record %s Loop Data" % cpu3loopdata_id)
-
-
 
 
 

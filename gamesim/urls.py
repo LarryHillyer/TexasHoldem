@@ -13,7 +13,8 @@ from gamesim.views import  index, job_queue,  job_dispatcher, \
     reset_dispatcher, get_dispatcher_time, query_jobs, analyze, \
     Finished_Job, analyzer_dispatcher, Analyzed_Job, analyze_queue, \
     reset_dispatcher2, get_dispatcher_status2, get_dispatcher_time2, \
-    get_analyze_job_status
+    get_analyze_job_status, get_sim_form_data, put_sim_form_data, \
+    get_pending_job_list
     
 
     
@@ -21,7 +22,12 @@ urlpatterns = [
     
     url(r'^$', index.as_view(), name = 'index'),
     url(r'^job_queue/$', job_queue.as_view(), name = 'job_queue'),
-
+    url(r'^get_sim_form_data/$', get_sim_form_data.as_view(), 
+        name = 'get_sim_form_data'),
+    url(r'^put_sim_form_data/$', put_sim_form_data.as_view(), 
+        name = 'put_sim_form_data'),
+    url(r'^get_pending_job_list/$', get_pending_job_list.as_view(), 
+        name = 'get_pending_job_list'),
     url(r'^job_dispatcher/$', job_dispatcher.as_view(), \
         name = 'job_dispatcher'),
     url(r'^get_dispatcher_status/$', get_dispatcher_status.as_view(), name = \
