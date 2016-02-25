@@ -1,6 +1,9 @@
-app.controller("QueryJobController", function($scope, $rootScope, GetPendingJobList ) {
+app.controller("QueryJobController", function($scope, GetPendingJobList ) {
     $scope.test="QueryJob"
     GetPendingJobList.all().then(function(data){
-        $rootScope.pending_job_list = data
+        $scope.pending_job_list = data
     })
+    $scope.start_dispatcher = function() {
+        
+    }
 })

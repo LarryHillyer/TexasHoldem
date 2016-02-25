@@ -3,4 +3,5 @@
     <ul class="job-queue">
         <li ng-repeat="job in pending_job_list"><a ui-sref="job({job_name: job.job_name})">{{job.job_name}}</a></li>
     </ul>
+    <button type="button" ng-click="start_dispatcher()" class="btn btn-primary" >Start Dispatcher</button>
 </div>

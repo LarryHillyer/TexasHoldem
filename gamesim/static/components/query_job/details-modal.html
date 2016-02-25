@@ -18,19 +18,20 @@
                 </select>
                 <div class="form-group">
                     <label for="num-loops">Number Of Loops</label>
-                    <input type="text" id="num-loops" ng-model="job.num_loops">{{simFormLoops.num_loops}}
+                    <input type="text" id="num-loops" ng-model="simFormData.num_loops">{{simFormLoops.num_loops}}
                 </div>
                 <div class="form-group">
                     <label for="num-games">Number Of Games per Loop</label>
-                    <input type="text" id="num-games" ng-model="job.num_games">{{simFormLoops.num_games}}
+                    <input type="text" id="num-games" ng-model="simFormData.num_games">{{simFormLoops.num_games}}
                 </div>
                 <div class="form-group">
                     <label for="save-game">Save Data: </label>
-                    <input type="checkbox" id="save-game" ng-model="job.save_game_data">
+                    <input type="checkbox" id="save-game" ng-model="simFormData.save_game_data">
 
                 </div>
                 <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goQuery_job()">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="putSimJob()">Save changes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateSimJob()">Update Job</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteSimJob()">Delete Job</button>
         </form>
         </div>
 

@@ -14,7 +14,8 @@ class Simulation_Job_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Simulation_Job
         fields = ['id', 'job_name','status','run_time','finish_time', \
-        'num_players', 'num_cpus', 'num_loops', 'num_games', 'sim_dir',]
+        'num_players', 'num_cpus', 'num_loops', 'num_games', 'sim_dir', \
+        'save_game_data']
         
 class dispatcher_status_serializer(serializers.ModelSerializer):
     class Meta:

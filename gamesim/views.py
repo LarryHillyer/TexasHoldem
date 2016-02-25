@@ -110,6 +110,7 @@ class put_sim_form_data(APIView):
         sim_form_data = request.POST['sim_form_data']
         sim_form_data = json.loads(sim_form_data)
         print(sim_form_data['num_games'])
+        print(sim_form_data['save_game_data'])
         #form = Simulation_Job_Form1(request.POST)
                       
         sim = Simulation_Job( job_name = 'sim', 
@@ -176,6 +177,45 @@ class get_pending_job_list(APIView):
         print(pending_job_list)
         return Response(pending_job_list.data)
         
+class get_sim_job(APIView):
+    
+    def get_sim_object(self, job_name):
+        try:
+            return Simulation_Job.objects.filter(job_name=job_name)
+        except Simulation_Job.DoesNotExist:
+            raise Http404
+            
+    def post(self,request):
+        job_name = request.POST['get_sim_job']
+        print(job_name)
+        requested_job = self.get_sim_object(job_name)
+        print(requested_job)
+        requested_job = Simulation_Job_Serializer(requested_job[0])
+        return Response(requested_job.data)
+        
+    
+        
+class delete_sim_job(APIView):
+    
+    def get_sim_object(self, job_name):
+        try:
+            return Simulation_Job.objects.filter(job_name=job_name)
+        except Simulation_Job.DoesNotExist:
+            raise Http404
+    
+    def post(self, request):
+        job_name = request.POST['delete_sim_job']
+        print(job_name)
+        #job_name = json.loads(job_name)
+        deleted_job = self.get_sim_object(job_name)
+        deleted_job.delete()
+        return Response()
+        
+class start_dispatcher(APIView):
+    def get(self,request):
+        
+        return Response()
+    
 
 class job_queue(APIView):
     

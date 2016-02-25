@@ -25,8 +25,14 @@ app.config(function($stateProvider, $urlRouterProvider){
         url:"/query_job/:job_name",
         templateUrl:"/static/components/query_job/details.html",
         controller:"DetailsController",
-        controllerAs: "dc"
-        
+        controllerAs: "dc"    
+    })
+    
+    .state ("job_dispatcher", {
+        url: "/job_dispatcher",
+        templateUrl:"/static/components/job_dispatcher/job_dispatcher.html",
+        controller:"JobDispatcherController",
+        controllerAs: "jdc"
     })
     
 })

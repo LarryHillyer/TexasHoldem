@@ -1,12 +1,12 @@
-app.controller("CreateSimController", function($scope, $rootScope, GetSimFormData, PutSimFormData){
+app.controller("CreateSimController", function($scope, $rootScope, GetSimFormData, PutSimFormData,  $uibModal){
     $scope.test = "Create Simulation"
-    $scope.simFormData = {};
+    $rootScope.simFormData = {};
     
     GetSimFormData.all().then(function(data){
-        $scope.simFormData = data
-        $scope.simFormData['save_game_data'] = false
+        $rootScope.simFormData = data
+        $rootScope.simFormData['save_game_data'] = false
     })
-    $scope.numPlayers = {
+    $rootScope.numPlayers = {
         playersSelect: '2',
         availableOptions: [
             {id: '2', name: '2 Players'},
@@ -18,7 +18,7 @@ app.controller("CreateSimController", function($scope, $rootScope, GetSimFormDat
             {id: '8', name: '8 Players'},
         ],
    }
-   $scope.numCPUs = {
+   $rootScope.numCPUs = {
         cpusSelect: '3',
         availableOptions: [
             {id: '1', name: '1 CPU'},
@@ -27,14 +27,35 @@ app.controller("CreateSimController", function($scope, $rootScope, GetSimFormDat
         ],
    }
    
-   $scope.putPlayers = function(num_players) {
-       $scope.simFormData['num_players'] = num_players
-   }
-   $scope.putCPUs = function(num_cpus) {
-       $scope.simFormData['num_cpus'] = num_cpus
-   }
-   $scope.putSimJob = function() {
-       var simFormDataJSON = JSON.stringify($scope.simFormData)
+   $scope.open = function (size) {
+
+      $uibModal.open({  
+        templateUrl: '/static/components/create_sim/create_sim-modal.html',
+        controller: 'ModalInstanceCtrl1',
+        size: size
+      })
+    }
+    
+   
+
+})
+
+app.controller("ModalInstanceCtrl1", function($scope, $rootScope, $state, $uibModalInstance, PutSimFormData, putPlayers1, putCPUs1 ){
+    
+    $rootScope.putPlayers = function(num_players) {
+       putPlayers1.all($rootScope, num_players);
+    }
+    
+    $rootScope.putCPUs = function(num_cpus) {
+       putCPUs1.all($rootScope, num_cpus)
+    }
+    
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel')           
+    }
+    
+    $scope.putSimJob = function() {
+       var simFormDataJSON = JSON.stringify($rootScope.simFormData)
        PutSimFormData.all({'sim_form_data':simFormDataJSON})
-   }
+   }   
 })
