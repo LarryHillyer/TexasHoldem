@@ -1,0 +1,35 @@
+<div>
+    <div class="dispatcher-content">
+        <h2 id="title">Simulation Dispatcher</h2>
+        <br/>
+        <b id="job_name"></b>
+        <br />
+        <br />
+        <b id="job_dispatcher_status">Job Dispatcher is: {{ dispatcher_status1.status }}</b>
+        <br/>
+        <b id="dispatcher_time">Job has ran for: </b>
+        <br />
+        <br />
+
+        <table id="cpu_update">
+            <thead>
+                <tr>
+                    <th scope="col"> Loop </th>
+                    <th scope="col"> CPU 1 </th>
+                    <th scope="col"> CPU 2 </th>
+                    <th scope="col"> CPU 3 </th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+    </div>
+
+    <button id="reset_dispatch" type="button">Reset Dispatcher</button>
+    <br />
+    <br />
+
+    <button id="get_status" data-statusid="{{ dispatcher_status1.id }}" type="button" class="{{ dispatcher_status1.status }}"
+        hidden="hidden">Status</button>
+    <button id="get_l_status" type="button" hidden="hidden"> Loop Status</button>
+</div>

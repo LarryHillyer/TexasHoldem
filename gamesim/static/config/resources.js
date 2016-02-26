@@ -49,10 +49,24 @@
     app.factory('StartDispatcher', function($http){
         return {
             all: function() {
-                return $http.get("/gamesim/start_dispatcher/")
+                return $http.get("/gamesim/start_dispatcher/").then(function(response){
+                    return response.data
+                })
             }
         }
     })
+    
+    app.factory('GetDispatcherStatus1', function($http){
+        return{
+            all: function(){
+                return $http.get("/gamesim/get_dispatcher_status1/").then(function(response){
+                    return response.data;
+                })
+            }
+        }
+    });
+    
+    
     
     app.service('putPlayers1', function(){       
         this.all = function($rootScope, num_players) {

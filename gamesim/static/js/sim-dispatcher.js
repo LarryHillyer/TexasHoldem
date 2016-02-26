@@ -1,5 +1,5 @@
 
-update_dispatcher();
+
 function update_dispatcher() {		
 	sim1Trigger();
 	sim2Trigger();}
@@ -17,3 +17,5 @@ function sim_button2_click() {
 	var status = document.getElementById("get_status").getAttribute("class");	 
 	if (status != "Finished" ){
 		document.getElementById("get_l_status").click(); }}
+        
+update_dispatcher();       

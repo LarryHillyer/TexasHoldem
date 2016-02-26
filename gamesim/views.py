@@ -157,7 +157,7 @@ class get_pending_job_list(APIView):
             raise Http404
                      
     def get(self, request):
-        
+        print("get pending jobs")
         pending_job_list = None
         dispatch_status1 = self.get_job_object(pk=1)
         if dispatch_status1.status == 'Stopped':
@@ -173,9 +173,9 @@ class get_pending_job_list(APIView):
         #form = Simulation_Job_Form2()
         #context = {'pending_job_list':pending_job_list, 'form':form}
         print(pending_job_list)
-        pending_job_list = Simulation_Job_Serializer(pending_job_list, many=True)
-        print(pending_job_list)
-        return Response(pending_job_list.data)
+        pending_job_list1 = Simulation_Job_Serializer(pending_job_list, many=True)
+        print(pending_job_list1.data)
+        return Response(pending_job_list1.data)
         
 class get_sim_job(APIView):
     
@@ -212,10 +212,70 @@ class delete_sim_job(APIView):
         return Response()
         
 class start_dispatcher(APIView):
+    
+    def get_object(self, pk):
+        try:
+            return dispatcher_status.objects.get(pk=pk)
+        except dispatcher_status.DoesNotExist:
+            raise Http404
+            
+    def get_loop_status_objects(self):
+        try:
+            return loop_status.objects.all()
+        except:
+            raise Http404
+    
+    
+    def get_first_job_id(self, status):      
+        try:
+            jobs = Simulation_Job.objects.filter(status=status)
+            min_run_time = jobs[0].run_time
+            first_job = jobs[0]
+            if jobs.count() > 1:
+                for i, job in enumerate(jobs, 1):
+                    if job.run_time < min_run_time:
+                        min_run_time = job.run_time
+                        first_job = job
+            return first_job.id
+        except:
+            raise Http404    
+    
     def get(self,request):
         
-        return Response()
+        loop_status1 = self.get_loop_status_objects()
+        loop_status1.delete()
+        print("loop status")
+        first_job_id = self.get_first_job_id(status='pending')
+        args = ['python',  sim_dir + job_script, str(first_job_id)]
+        subprocess.Popen(args, stdout = subprocess.PIPE)
+        
+        dispatcher_status1 =  self.get_object(pk=1)
+        print("dispatcher status")
+        if dispatcher_status1.status == 'Finished':
+            dispatcher_status1.status = 'Stopped'
+            dispatcher_status1.save()
+        
+        dispatcher_status1 = dispatcher_status_serializer(dispatcher_status1)
+        return Response(dispatcher_status1.data)
     
+class get_dispatcher_status1(APIView):
+    
+    def get_object(self, pk):
+        try:
+            return dispatcher_status.objects.get(pk=pk)
+        except dispatcher_status.DoesNotExist:
+            raise Http404    
+    
+    def get(self, request):
+        dispatcher_status1 =  self.get_object(pk=1)
+        print("dispatcher status")
+        if dispatcher_status1.status == 'Finished':
+            dispatcher_status1.status = 'Stopped'
+            dispatcher_status1.save()
+        
+        dispatcher_status1 = dispatcher_status_serializer(dispatcher_status1)
+        return Response(dispatcher_status1.data)
+
 
 class job_queue(APIView):
     
@@ -225,20 +285,11 @@ class job_queue(APIView):
         except Simulation_Job.DoesNotExist:
             raise Http404
             
-    def get_job_object(self, pk):
+    def get_object(self, pk):
         try:
-            ds1 = dispatcher_status.objects.get(pk=pk)
-            if ds1.status == 'Reset':
-                ds1.status = 'Stopped'
-                ds1.job_name = ''
-                ds1.save()           
-            return ds1
-        except:
-            ds1 = dispatcher_status.objects.all().delete()
-            ds1 = dispatcher_status(status = 'Stopped')
-            ds1.id = 1
-            ds1.save()
-            return ds1
+            return dispatcher_status.objects.get(pk=pk)
+        except dispatcher_status.DoesNotExist:
+            raise Http404
             
     def get_loop_status_objects(self):
         try:
@@ -342,7 +393,18 @@ class job_dispatcher(APIView):
         return render(request, 'gamesim/job_dispatcher.html',context)
        
 class get_dispatcher_status(APIView):
-
+    
+    def get(self, request):
+        dispatcher_status1 =  self.get_object(pk=1)
+        print("dispatcher status")
+        if dispatcher_status1.status == 'Finished':
+            dispatcher_status1.status = 'Stopped'
+            dispatcher_status1.save()
+        
+        dispatcher_status1 = dispatcher_status_serializer(dispatcher_status1)
+        return Response(dispatcher_status1.data)
+    
+    
     def get_object(self, pk):
         try:
             return dispatcher_status.objects.get(pk=pk)
@@ -354,7 +416,7 @@ class get_dispatcher_status(APIView):
         dispatcher_status1 = self.get_object(status_id)
         serializer = dispatcher_status_serializer(dispatcher_status1)
         return Response(serializer.data)
-        
+       
 class get_dispatcher_time(APIView):
     
     def get_object(self, job_name):
