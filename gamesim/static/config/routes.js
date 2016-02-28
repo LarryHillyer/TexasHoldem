@@ -30,9 +30,16 @@ app.config(function($stateProvider, $urlRouterProvider){
     
     .state ("job_dispatcher", {
         url: "/job_dispatcher",
-        templateUrl:"/static/components/job_dispatcher/job__dispatcher.html",
+        templateUrl:"/static/components/job_dispatcher/job_dispatcher.html",
         controller:"JobDispatcherController",
         controllerAs: "jdc"
+    })
+    
+    .state ("analyze_jobs", {
+        url: "/analyze_jobs",
+        templateUrl:"/static/components/analyze_jobs/analyze_jobs.html",
+        controller:"AnalyzeJobsController",
+        controllerAs: "ajc"
     })
     
 })

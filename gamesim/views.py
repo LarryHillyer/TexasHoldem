@@ -204,6 +204,7 @@ class delete_sim_job(APIView):
             raise Http404
     
     def post(self, request):
+        print(request.POST)
         job_name = request.POST['delete_sim_job']
         print(job_name)
         #job_name = json.loads(job_name)
@@ -276,7 +277,117 @@ class get_dispatcher_status1(APIView):
         dispatcher_status1 = dispatcher_status_serializer(dispatcher_status1)
         return Response(dispatcher_status1.data)
 
+class get_dispatcher_time1(APIView):
+    
+    def get_object(self, job_name):
+        try:
+            return Simulation_Job.objects.get(job_name=job_name)
+        except dispatcher_status.DoesNotExist:
+            raise Http404
+      
+    def post(self,request):
+        print("dispatcher time")
+        print(request.POST)
+        job_name = request.POST['running_job_name']
+        print(job_name)
+        #job_name =json.loads(job_name)
+        dispatcher_status1 = self.get_object(job_name)
+        initial_time = dispatcher_status1.run_time
+        current_time = dt.datetime.now(pytz.utc)
+        job_time = current_time - initial_time
+        hrs = math.floor(job_time.seconds/3600)
+        min_secs = job_time.seconds - hrs*3600 
+        mins = math.floor(min_secs/60)
+        secs = min_secs - mins*60
+        time_delta = dt.time(hour=hrs, minute=mins, second=secs)
+        dispatcher_time1 = dispatcher_time(time_delta=time_delta)
+        serializer = dispatcher_time_serializer(dispatcher_time1)
+        return Response(serializer.data)
+        
+class get_loop_status1(APIView):
+    
+    def get_object(self):
+        try:
+            return loop_status.objects.all()
+        except loop_status.DoesNotExist:
+            raise Http404
+          
+    def get(self, request):
+        loops = self.get_object()
+        serializer = loop_status_serializer(loops, many = True)
+        return Response(serializer.data)
+        
+class reset_dispatcher(APIView):
+    
+    def set_object(self):
+        try:
+            ds1 = dispatcher_status.objects.get(pk=1)
+            if ds1.status != 'Reset':
+                ds1.status = 'Reset'
+                ds1.save()
+        except:
+            ds1 = dispatcher_status.objects.all().delete()
+            ds1 = dispatcher_status(status = 'Reset')
+            ds1.id = 1
+            ds1.save()      
+        try:
+            sj1 = Simulation_Job.objects.get(status='running')
+            sj1.status ='aborted'
+            sj1.save()
+        except:
+            pass
+        return
+   
+    def get(self,request):
+        
+        self.set_object()
+        return Response("")
 
+class put_analyze_form_data(APIView):
+
+    def post(self,request):
+        
+        print(request.POST)
+        analyze_form_data = json.loads(request.POST['analyze_form_data'])
+        num_players = analyze_form_data['num_players']
+        print(num_players)
+        start_date = analyze_form_data['start_date']
+        start_date = start_date.split('T')[0]
+        print(start_date)
+        start_date = dt.datetime.strptime(start_date,'%Y-%m-%d')
+        print(start_date)
+        end_date =analyze_form_data['end_date']
+        end_date = end_date.split('T')[0]
+        print(end_date)
+        end_date = dt.datetime.strptime(end_date,'%Y-%m-%d')
+        print(end_date)
+        start_datetime = dt.datetime(year=start_date.year, month = \
+            start_date.month, day = start_date.day, hour = 0, minute = 0, \
+            second = 0).replace(tzinfo=pytz.utc)
+        end_datetime = dt.datetime(year=end_date.year, month = \
+            end_date.month, day = end_date.day, hour = 23, minute = 59, \
+            second = 59).replace(tzinfo=pytz.utc)
+        print(start_datetime)
+        print(end_datetime)
+        finished_job_list = finished_jobs.objects.all().delete()                      
+        finished_job_list = Simulation_Job.objects.filter( \
+            Q(run_time__gte = start_datetime) & Q(run_time__lte = \
+            end_datetime), num_players = num_players, status = 'finished' )
+        for job in finished_job_list:
+            finished_job = finished_jobs(job_name = job.job_name, \
+                status = job.status, run_time = job.run_time, finish_time \
+                = job.finish_time, num_players = job.num_players, \
+                num_cpus = job.num_cpus, num_loops = job.num_loops, \
+                num_games = job.num_games, sim_dir = job.sim_dir, \
+                summary_data = job.summary_data, save_game_data = \
+                job.save_game_data)
+            finished_job.save()
+            
+        #context = {'finished_job_list': finished_job_list}
+        return Response()
+        
+        
+        
 class job_queue(APIView):
     
     def get_sim_object(self, status):
@@ -393,7 +504,7 @@ class job_dispatcher(APIView):
         return render(request, 'gamesim/job_dispatcher.html',context)
        
 class get_dispatcher_status(APIView):
-    
+    """
     def get(self, request):
         dispatcher_status1 =  self.get_object(pk=1)
         print("dispatcher status")
@@ -403,7 +514,7 @@ class get_dispatcher_status(APIView):
         
         dispatcher_status1 = dispatcher_status_serializer(dispatcher_status1)
         return Response(dispatcher_status1.data)
-    
+    """
     
     def get_object(self, pk):
         try:
@@ -454,31 +565,7 @@ class get_loop_status(APIView):
         serializer = loop_status_serializer(loops, many = True)
         return Response(serializer.data)
         
-class reset_dispatcher(APIView):
-    
-    def set_object(self):
-        try:
-            ds1 = dispatcher_status.objects.get(pk=1)
-            if ds1.status != 'Reset':
-                ds1.status = 'Reset'
-                ds1.save()
-        except:
-            ds1 = dispatcher_status.objects.all().delete()
-            ds1 = dispatcher_status(status = 'Reset')
-            ds1.id = 1
-            ds1.save()      
-        try:
-            sj1 = Simulation_Job.objects.get(status='running')
-            sj1.status ='aborted'
-            sj1.save()
-        except:
-            pass
-        return
-   
-    def get(self,request):
-        
-        self.set_object()
-        return Response("")
+
               
 class initialize_sim(APIView):
 

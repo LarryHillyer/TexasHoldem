@@ -30,3 +30,12 @@ background-image:url("/static/img/Holdem.jpg")
 .dispatcher-content {
     color:darkslateblue;
 }
+
+.job-options {
+    list-style-type: none;
+    padding:0; 
+    margin:0;
+}
+.modal-body-style {
+    height:250px;
+}

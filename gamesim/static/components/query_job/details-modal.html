@@ -1,9 +1,10 @@
 
 <div>
     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="goQuery_job()"><span aria-hidden="true">&times;</span></button>        
         <h3 class="modal-title">{{job_name}}</h3>
     </div>
-    <div class="modal-body">
+    <div class="modal-body modal-body-style">
         <form>
             <div class="form-group">
                 <label for="playersSelect">Select Number Of Players: </label>
@@ -27,13 +28,13 @@
                 <div class="form-group">
                     <label for="save-game">Save Data: </label>
                     <input type="checkbox" id="save-game" ng-model="simFormData.save_game_data">
-
                 </div>
-                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goQuery_job()">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateSimJob()">Update Job</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteSimJob()">Delete Job</button>
+            </div>
         </form>
-        </div>
-
     </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goQuery_job()">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateSimJob()">Update Job</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteSimJob()">Delete Job</button>        
     </div>
+</div>

@@ -1,7 +1,22 @@
-app.controller('JobDispatcherController', function($scope, $rootScope, GetDispatcherStatus1){
+app.controller('JobDispatcherController', function($scope, $rootScope,  $uibModal ){
     
+    $scope.open = function (size) {
+
+      $uibModal.open({  
+        templateUrl: '/static/components/job_dispatcher/job_dispatcher-modal.html',
+        controller: 'ModalInstanceCtrl3',
+        size: size
+      })
+    }
+       
+    $scope.test = "Job Dispatcher"
+    $scope.open("lg")
+      
+})
+
+app.controller("ModalInstanceCtrl3", function($scope, $rootScope, $state,  $uibModalInstance, StartDispatcher, ResetDispatcher, GetPendingJobList,GetDispatcherStatus1, GetDispatcherTime1, GetLoopStatus1  ){
     
-    function update_dispatcher() {		
+function update_dispatcher() {		
 	   sim1Trigger();
 	   sim2Trigger();
     }
@@ -13,19 +28,12 @@ app.controller('JobDispatcherController', function($scope, $rootScope, GetDispat
                 if ($rootScope.dispatcher_status1.status === "Finished" || $rootScope.dispatcher_status1.status === "Stopped"){
                     clearInterval(int1)    
                 } else {
-                    //document.getElementById("get_status").click()
-                    $("#job_dispatcher_status").html('Job Dispatcher is: ' + $rootScope.dispatcher_status1.status)
-                    if ($rootScope.dispatcher_status1.status === 'Finished') {
-				        $("#get_status").attr({class: "Finished"})
-                    }
+
                     if ($rootScope.dispatcher_status1.job_name) {
-                        $("#job_name").attr({ visible: "true"});
-				        $("#job_name").html('Job: ' + $rootScope.dispatcher_status1.job_name);
-                        $.getJSON('/gamesim/get_dispatcher_time/', {running_job_name: $rootScope.dispatcher_status1.job_name}, function(time_data){
-    					   $.each (time_data, function(key, value) {
-    	    				   $("#dispatcher_time").html("Job has ran for: " + value);
-    	    			   });
-    	    		    }); 
+                        var job_name = {"running_job_name": $rootScope.dispatcher_status1.job_name}
+                        GetDispatcherTime1.all(job_name).then(function(data){
+                            $rootScope.time = data.time_delta
+                        })
                     }
                 }
            })
@@ -39,75 +47,24 @@ app.controller('JobDispatcherController', function($scope, $rootScope, GetDispat
                 if ($rootScope.dispatcher_status1.status === "Finished" || $rootScope.dispatcher_status1.status === "Stopped"){
                     clearInterval(int2)    
                 } else {
-                    document.getElementById("get_l_status").click()
+                    GetLoopStatus1.all().then(function(table_data){
+                        $rootScope.renderTable = true ;
+                        $rootScope.table_data = table_data
+                    })           
                 }
            }) 
        }, 2500);  
     }
-
-           
-    $(document).ready(function() {
-//   $("#get_status").click(function(){
-//   var statusid;
-//   statusid = $(this).attr("data-statusid");
-//     $.getJSON('/gamesim/get_dispatcher_status/', {dispatcher_status1_id: statusid}, function(data){
-// 		$.each (data, function(key, value) {
-// 		if (key == 'status')
-// 			$("#job_dispatcher_status").html('Job Dispatcher is: ' + value);
-// 			if (value == 'Finished') {
-// 				$("#get_status").attr({class: "Finished"});}	
-// 		else if (key ==	'job_name')
-// 			if (value != '') {
-// 				$("#job_name").attr({ visible: "true"});
-// 				$("#job_name").html('Job: ' + value);	
-// 				    $.getJSON('/gamesim/get_dispatcher_time/', {running_job_name: value}, function(time_data){
-//     					$.each (time_data, function(key, value) {
-//     	    				$("#dispatcher_time").html("Job has ran for: " + value);
-//     	    			});
-//     	    		});
-// 				}
-// 		}); 
-//     });	
-//   });
-
-  $("#get_l_status").click(function(){
-    $.getJSON('/gamesim/get_loop_status', function(table_data) {
-    	$("tbody > tr > td").remove();    	
-    	$("tbody > tr ").remove();
-
-        $.each (table_data, function(i, table_data1) { 		
-      	    var row = new Number(i);
- 			var row_idattr = "'row" + row.toString()+ "'";       
-            $("#cpu_update").append("<tr " + "id=" + row_idattr  + " >");
-        	$.each(table_data1, function(key, value) {
- 				var data_cell = "#row" + row.toString();
- 				var cell_idattr = "'cell_" + row.toString() + key + "'";
- 				var cell_idattr2 = "#cell_" + row.toString() + key;
- 				if (key == "loop_num")  {
- 					$(data_cell).append("<th id=" + cell_idattr + " scope='row' >");
- 					$(cell_idattr2).html(value); }
- 				else if	(key == "cpu1_exit_status") {
- 					$(data_cell).append("<td id=" + cell_idattr + " >");
- 					$(cell_idattr2).html(value); }	 				
- 				else if	(key == "cpu2_exit_status") {
- 					$(data_cell).append("<td id=" + cell_idattr + " >");
- 					$(cell_idattr2).html(value); }		
- 				else if	(key == "cpu3_exit_status") {
- 					$(data_cell).append("<td id=" + cell_idattr + " >");
- 					$(cell_idattr2).html(value); }						
-        	});
-      	});
-    });
-  });
-  
-  $("#reset_dispatch").click(function(){
-    $.get('/gamesim/reset_dispatcher/', function(data) { 
-    	$("#job_dispatcher_status").html('Job Dispatcher is: Reset');});  
-  });
-  }); 
-       
-    $scope.test = "Job Dispatcher"
+    
+    $scope.resetDispatcher = function(){
+        ResetDispatcher.all()
+    }
+    
+    $scope.goJob_Dispatcher = function () {
+        $uibModalInstance.dismiss('cancel')
+        $state.go("job_dispatcher")     
+    }    
+    
     update_dispatcher();
     
-
 })

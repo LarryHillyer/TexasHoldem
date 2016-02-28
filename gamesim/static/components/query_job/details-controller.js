@@ -35,6 +35,7 @@ app.controller("DetailsController", function($state, $scope, $rootScope, $uibMod
                     { id: '3', name: '3 CPUs' },
                 ],
             }
+            $scope.open("lg")
         })
        
     $scope.open = function (size) {
@@ -55,7 +56,6 @@ app.controller("ModalInstanceCtrl", function($scope,$rootScope, $state, $uibModa
     }
     
     $scope.deleteSimJob = function() {
-    //    var deleteSimJobJSON = JSON.stringify($rootScope.job.job_name)
        DeleteSimJob.all({'delete_sim_job': $rootScope.simFormData.job_name})
        $uibModalInstance.dismiss('cancel')
        $state.go("query_job")

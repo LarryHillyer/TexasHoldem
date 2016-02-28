@@ -1,10 +1,9 @@
 <div>
-    
+    <br/>
     <div ng-show="pending_job_list.length">
-        <ul class="job-queue">
-            <li ng-repeat="job in pending_job_list"><a ui-sref="job({job_name: job.job_name})">{{job.job_name}}</a></li>
-        </ul>
-        <button type="button" ng-click="start_dispatcher()" class="btn btn-primary">Start Dispatcher</button>
+        <h3>Simulation Queue</h3>
+        <button type="button" class="btn btn-primary" ng-click="open('lg')">View Pending Jobs</button>
+        <button type="button" class="btn btn-primary" ng-click="start_dispatcher()" >Run Pending Jobs</button>
     </div>
     
     <div ng-show="!pending_job_list.length">

@@ -1,10 +1,10 @@
 <div>
     <div class="modal-content">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">Create Simulation Job</h4>
         </div>
-        <div class="modal-body">
+        <div class="modal-body modal-body-style">
             <form>
                 <div class="form-group">
                     <label for="playersSelect">Select Number Of Players: </label>
@@ -30,11 +30,14 @@
                         <input type="checkbox" id="save-game" ng-model="simFormData.save_game_data">
 
                     </div>
-                    
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Cancel</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="putSimJob()">Save changes</button>            
+                </div>    
+
             </form>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Cancel</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="putSimJob()">Save changes</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="queryJob()">View Queue</button>                       
         </div>
     </div>
 </div>
