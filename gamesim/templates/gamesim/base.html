@@ -52,7 +52,8 @@
                             <li><a ui-sref="query_job ">Simulation Queue</a></li>
                             <li><a ui-sref="job_dispatcher">Simulation Dispatcher</a></li>
                             <li><a ui-sref="analyze_jobs">Create Analysis</a></li>
-                            <li><a href="/gamesim/analyze_queue">Analysis Queue</a></li>
+                            <li><a ui-sref="query_analyze_job" >Select Analysis Jobs</a></li>
+                            <li><a ui-sref="analyze_queue">Analysis Queue</a></li>
                             <li><a href="/gamesim/analyzer_dispatcher/">Analysis Dispatcher</a></li>
                             <li><a href="/gamesim/initialize_sim/ ">Initialize Simulation</a></li>              
 
@@ -81,7 +82,8 @@
                         <li><a ui-sref="query_job" >Simulation Queue</a></li>
                         <li><a ui-sref="job_dispatcher">Simulation Dispatcher</a></li>		
                         <li><a ui-sref="analyze_jobs" >Analyze Jobs</a></li>
-                        <li><a href="/gamesim/analyze_queue/">Analysis Queue</a></li>
+                        <li><a ui-sref="query_analyze_job" >Select Analysis Jobs</a></li>
+                        <li><a ui-sref="analyze_queue">Analysis Queue</a></li>
                         <li><a href="/gamesim/analyzer_dispatcher/" >Analysis Dispatcher</a></li>        				
                         <li><a href="/gamesim/initialize_sim/">Initialize Simulation</a></li>
                     </ul>       
@@ -113,7 +115,7 @@
     <script src ="{% static 'config/routes.js' %} "></script>
     <script src ="{% static 'config/resources.js' %} "></script>
 
-    <script src="{% static 'js/gamesim-ajax.js' %} "></script>
+    <!--<script src="{% static 'js/gamesim-ajax.js' %} "></script>-->
     <script src="{% static 'js/gamesim-ajax1.js' %} "></script>
 
     <script src="{% static 'components/home/home-controller.js' %} "></script>
@@ -122,6 +124,9 @@
     <script src="{% static 'components/query_job/details-controller.js' %} "></script>
     <script src="{% static 'components/job_dispatcher/job_dispatcher-controller.js' %} "></script>
     <script src="{% static 'components/analyze_jobs/analyze_jobs-controller.js' %} "></script>
+    <script src="{% static 'components/query_analyze_job/query_analyze_job-controller.js' %} "></script>
+    <script src="{% static 'components/query_analyze_job/details-controller.js' %} "></script>
+    <script src="{% static 'components/analyze_queue/analyze_queue-controller.js' %} "></script>
     
 </body>
 

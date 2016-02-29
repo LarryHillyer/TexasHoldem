@@ -42,4 +42,41 @@ app.config(function($stateProvider, $urlRouterProvider){
         controllerAs: "ajc"
     })
     
+    .state ("query_analyze_job", {
+        url: "/query_analyze_job",
+        templateUrl: "/static/components/query_analyze_job/query_analyze_job.html",
+        controller: "AnalyzeJobController",
+        controllerAs: "qajc"
+    })
+    
+    .state ("analyze_job", {
+        url:"/query_analyze_job/:analyze_job_name",
+        templateUrl:"/static/components/query_analyze_job/details.html",
+        controller:"AnalyzeDetailsController",
+        controllerAs: "adc"    
+    })
+    
+    .state ("analyze_queue", {
+        url: "/analyze_queue",
+        templateUrl: "/static/components/analyze_queue/analyze_queue.html",
+        controller: "AnalyzeQueueController",
+        controllerAs: "aqc"
+    })
+    
+    .state ("analyze_queue_job", {
+        url:"/analyze_queue/:analyze_job_name",
+        templateUrl:"/static/components/analyze_queue/details.html",
+        controller:"AnalyzeQueueDetailsController",
+        controllerAs: "aqdc"    
+    })
+    
+    .state ("analyze_dispatcher", {
+        url: "/analyzer_dispatcher",
+        templateUrl:"/static/components/analyze_dispatcher/analyze_dispatcher.html",
+        controller:"AnalyzeDispatcherController",
+        controllerAs: "adc1"
+    })
+    
+    
+    
 })

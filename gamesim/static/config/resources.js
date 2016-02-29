@@ -4,7 +4,7 @@
         return {
             all:function(job_name) {
                 return $.post("/gamesim/get_sim_job/", job_name).then(function(response){
-                    return JSON.parse(response.data);
+                    return response;
                 })
             }
         }
@@ -119,9 +119,7 @@
             $rootScope.analyzeFormData['end_date'] = end_date.toString()  
         }    
     }) 
-    
      
-    
    app.service('putPlayers2', function(){       
         this.all = function($rootScope, num_players) {
             $rootScope.analyzeFormData['num_players'] = num_players    
@@ -134,7 +132,34 @@
                 return $.post("/gamesim/put_analyze_form_data/", analyze_form_data)
             }
         }
-    });    
+    }); 
+       
+    app.factory('GetFinishedJobList', function($http){
+        return{
+            all: function(){
+                return $http.get("/gamesim/get_finished_job_list/").then(function(response){
+                    return response.data;
+                })
+            }
+        }
+    });
     
+    app.factory('PutAnalyzeJob', function(){
+        return {
+            all: function(analyze_queue) {
+                return $.post("/gamesim/put_analyze_job/", analyze_queue)
+            }
+        }
+    });
+    
+   app.factory('GetAnalysisJobList', function($http){
+        return{
+            all: function(){
+                return $http.get("/gamesim/get_analysis_job_list/").then(function(response){
+                    return response.data;
+                })
+            }
+        }
+    }); 
     
 })();

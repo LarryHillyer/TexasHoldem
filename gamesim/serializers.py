@@ -42,7 +42,8 @@ class finished_jobs_serializer(serializers.ModelSerializer):
     class Meta:
         model = finished_jobs
         fields = ['id', 'job_name','status','run_time','finish_time', \
-        'num_players', 'num_cpus', 'num_loops', 'num_games', 'sim_dir',]
+            'num_players', 'num_cpus', 'num_loops', 'num_games', 'sim_dir',\
+            'summary_data', 'save_game_data']
 
         
 class analyzed_jobs_serializer(serializers.ModelSerializer):

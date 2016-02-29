@@ -1,9 +1,9 @@
-app.controller('JobDispatcherController', function($scope, $rootScope,  $uibModal ){
+app.controller('AnalyzeDispatcherController', function($scope, $rootScope,  $uibModal ){
     
     $scope.open = function (size) {
 
       $uibModal.open({  
-        templateUrl: '/static/components/job_dispatcher/job_dispatcher-modal.html',
+        templateUrl: '/static/components/analyze_dispatcher/analyze_dispatcher-modal.html',
         controller: 'ModalInstanceCtrl3',
         size: size
       })
@@ -13,7 +13,7 @@ app.controller('JobDispatcherController', function($scope, $rootScope,  $uibModa
       
 })
 
-app.controller("ModalInstanceCtrl3", function($scope, $rootScope, $state,  $uibModalInstance, StartDispatcher, ResetDispatcher, GetPendingJobList,GetDispatcherStatus1, GetDispatcherTime1, GetLoopStatus1  ){
+app.controller("ModalInstanceCtrl9", function($scope, $rootScope, $state,  $uibModalInstance, StartDispatcher, ResetDispatcher, GetPendingJobList,GetDispatcherStatus1, GetDispatcherTime1, GetLoopStatus1  ){
     
 function update_dispatcher() {		
 	   sim1Trigger();
@@ -61,7 +61,7 @@ function update_dispatcher() {
     
     $scope.goJob_Dispatcher = function () {
         $uibModalInstance.dismiss('cancel')
-        $state.go("job_dispatcher")     
+        $state.go("analyzer_dispatcher")     
     }    
     
     update_dispatcher();

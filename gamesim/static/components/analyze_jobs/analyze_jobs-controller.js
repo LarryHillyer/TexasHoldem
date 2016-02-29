@@ -7,7 +7,7 @@ app.controller("AnalyzeJobsController", function($scope, $rootScope, $uibModal){
       })
     }
     
-    $scope.open();
+    $scope.open("lg");
      
 })
 

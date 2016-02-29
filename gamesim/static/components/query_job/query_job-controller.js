@@ -35,7 +35,7 @@ app.controller("ModalInstanceCtrl2", function($scope,$rootScope, $state, $uibMod
         $scope.pending_job_list = data       
     })
     
-    $scope.goQuery_job = function () {
+    $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel')
         $state.go("query_job")     
     }

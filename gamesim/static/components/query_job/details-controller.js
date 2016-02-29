@@ -50,7 +50,8 @@ app.controller("DetailsController", function($state, $scope, $rootScope, $uibMod
 })
 
 app.controller("ModalInstanceCtrl", function($scope,$rootScope, $state, $uibModalInstance, DeleteSimJob, PutSimFormData, putPlayers1, putCPUs1 ){
-    $scope.goQuery_job = function () {
+    
+    $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel')
         $state.go("query_job")     
     }

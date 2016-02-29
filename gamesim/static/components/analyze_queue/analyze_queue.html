@@ -1,0 +1,13 @@
+<div>
+    <br/>
+    <div ng-show="analysis_job_list.length">
+        <h3>Analysis Queue</h3>
+        <br/><br/>
+        <button type="button" class="btn btn-primary" ng-click="open('lg')">View Pending Jobs</button>
+        <button type="button" class="btn btn-success" ng-click="start_dispatcher()" >Run Pending Jobs</button>
+    </div>
+    
+    <div ng-show="!analysis_job_list">
+        <h3>No Jobs In Queue</h3>    
+    </div>
+</div>
