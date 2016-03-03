@@ -1,7 +1,5 @@
-app.controller("CreateSimController", function($scope, $rootScope, $uibModal,GetSimFormData ){
-    $scope.test = "Create Simulation"
+app.controller("CreateSimController", function($scope, $rootScope, $uibModal,GetSimFormData, GetPendingJobList ){
     
-   
    $scope.open = function (size) {
 
       $uibModal.open({  
@@ -14,14 +12,18 @@ app.controller("CreateSimController", function($scope, $rootScope, $uibModal,Get
    GetSimFormData.all().then(function(data){
         $rootScope.simFormData = data
         $rootScope.simFormData['save_game_data'] = false
-        $scope.open("lg")
+        GetPendingJobList.all().then(function(data1) {
+            $rootScope.pending_job_list = data1
+            $scope.open("lg")
+        })
+        
     }) 
     
    
 
 })
 
-app.controller("ModalInstanceCtrl1", function($scope, $rootScope, $state, $uibModalInstance, GetSimFormData, PutSimFormData, putPlayers1, putCPUs1 ){
+app.controller("ModalInstanceCtrl1", function($scope, $rootScope, $state, $uibModalInstance, GetSimFormData, PutSimFormData, putPlayers1, putCPUs1, StartDispatcher, GetPendingJobList ){
     
     $rootScope.simFormData = {};
     
@@ -61,16 +63,30 @@ app.controller("ModalInstanceCtrl1", function($scope, $rootScope, $state, $uibMo
     
     $scope.putSimJob = function() {
        var simFormDataJSON = JSON.stringify($rootScope.simFormData)
-       PutSimFormData.all({'sim_form_data':simFormDataJSON})
-   }
+       PutSimFormData.all({'sim_form_data':simFormDataJSON}).then(function(){
+           GetPendingJobList.all().then(function(data1) {
+                $rootScope.pending_job_list = data1
+           })
+      })
+    }
    
-   $scope.queryJob = function() {
+   $scope.viewQueue = function() {
        $uibModalInstance.dismiss('cancel')
        $state.go("query_job")
-   } 
+   }
+   
+   
    
    GetSimFormData.all().then(function(data){
         $rootScope.simFormData = data
         $rootScope.simFormData['save_game_data'] = false
-    })  
+    })
+    
+    $scope.runQueue = function() {
+        StartDispatcher.all().then(function(data){
+            $rootScope.dispatcher_status1 = data
+            $uibModalInstance.dismiss('cancel')
+            $state.go("job_dispatcher")
+        })
+    }  
 })

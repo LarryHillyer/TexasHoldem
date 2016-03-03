@@ -13,16 +13,16 @@ from gamesim.views import  index, \
     get_pending_job_list, delete_sim_job, get_sim_job, start_dispatcher, \
     get_dispatcher_status1, get_dispatcher_time1, get_loop_status1, \
     put_analyze_form_data, get_finished_job_list, put_analyze_job, \
-    get_analysis_job_list, initialize_sim, analyze_queue,analyzer_dispatcher, \
+    get_analysis_job_list, initialize_sim,  \
     reset_dispatcher2, get_dispatcher_status2, get_dispatcher_time2, \
-    get_analyze_job_status, \
-    SimStatus, Finished_Job,  Analyzed_Job
+    get_analyze_job_status, start_dispatcher2, get_analyzed_job_data 
+    
     
 """
     job_queue,  job_dispatcher, \
     get_dispatcher_status,  get_loop_status, \
     reset_dispatcher, get_dispatcher_time, query_jobs, analyze, \
-    
+    analyze_queue,  Analyzed_Job, SimStatus, Finished_Job
 """
       
 urlpatterns = [
@@ -54,29 +54,21 @@ urlpatterns = [
         name = 'put_analyze_job'),
     url(r'^get_analysis_job_list/$', get_analysis_job_list.as_view(), 
         name = 'get_analysis_job_list'),    
-        
-    url(r'^analyze_queue/$', analyze_queue.as_view(), name = 'analyze_queue'),
-
-    url(r'^analyzer_dispatcher/$', analyzer_dispatcher.as_view(), \
-        name = 'analyzer_dispatcher'),
+    url(r'^start_dispatcher2/$', start_dispatcher2.as_view(), \
+        name = 'start_dispatcher2'),
+    url(r'^reset_dispatcher2/$', reset_dispatcher2.as_view(), name = \
+        'reset_dispatcher2'),    
     url(r'^get_dispatcher_status2/$', get_dispatcher_status2.as_view(), name = \
         'get_dispatcher_status2'),
     url(r'^get_dispatcher_time2/$', get_dispatcher_time2.as_view(), name = \
         'get_dispatcher_time2'),
     url(r'^get_analyze_job_status/$', get_analyze_job_status.as_view(), \
         name = 'get_analyze_job_status'),
-    url(r'^reset_dispatcher2/$', reset_dispatcher2.as_view(), name = \
-        'reset_dispatcher2'),
-
-
-    url(r'^Finished_Job(?P<pk>[0-9]+)/$', Finished_Job.as_view(), \
-        name = 'Finished_Job'),
-
-    url(r'^analyze_queue(?P<pk>[0-9]+)/$', Analyzed_Job.as_view(), \
-        name = 'analyze_queue'),
-
-
-    url(r'^(?P<pk>[0-9]+)/$', SimStatus.as_view(), name = 'SimStatus'),
+    url(r'^get_analyzed_job_data/$', get_analyzed_job_data.as_view(), \
+        name = 'get_analyzed_job_data'),
+        
+    url(r'^initialize_sim/$', initialize_sim.as_view(), \
+        name = 'initialize_sim'),
 
     url(r'^CPU1/(?P<cpu1loopdata_id>[0-9]+)/$', views.details1, \
         name = 'details1'),
@@ -84,9 +76,7 @@ urlpatterns = [
         name = 'details2'),
     url(r'^CPU3/(?P<cpu3loopdata_id>[0-9]+)/$', views.details3, \
         name = 'details3'),
-        
-    url(r'^initialize_sim/$', initialize_sim.as_view(), \
-        name = 'initialize_sim'),       
+
 ]
 
 url = format_suffix_patterns(urlpatterns)
@@ -124,14 +114,21 @@ url = format_suffix_patterns(urlpatterns)
         
     url(r'^query_jobs/$', query_jobs.as_view(), name = 'query_jobs'),
     url(r'^analyze/$', analyze.as_view(), name = 'analyze'),
+    url(r'^analyze_queue/$', analyze_queue.as_view(), name = 'analyze_queue'),
+    url(r'^analyze_queue(?P<pk>[0-9]+)/$', Analyzed_Job.as_view(), \
+        name = 'analyze_queue'),
 
-
+    url(r'^Finished_Job(?P<pk>[0-9]+)/$', Finished_Job.as_view(), \
+        name = 'Finished_Job'),
+    url(r'^(?P<pk>[0-9]+)/$', SimStatus.as_view(), name = 'SimStatus'),
 
     #url(r'^(?P<pending_job_id>[0-9]+)/$',views.detail, \
         #name = 'detail'),
 
     #url(r'^(?P<running_job_id>[0-9]+)/sim_status/$', views.sim_status, \
         #name = 'sim_status'),
+
+
           
 """  
 

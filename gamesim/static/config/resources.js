@@ -162,4 +162,71 @@
         }
     }); 
     
+    app.factory('StartDispatcher2', function($http){
+        return {
+            all: function() {
+                return $http.get("/gamesim/start_dispatcher2/").then(function(response){
+                    return response.data
+                })
+            }
+        }
+    })
+    
+    app.factory('ResetDispatcher2', function($http){
+        return {
+            all: function() {
+                return $http.get("/gamesim/reset_dispatcher/").then(function(response){
+                    return response.data
+                })
+            }
+        }
+    })
+    
+    app.factory('GetDispatcherStatus2', function($http){
+        return{
+            all: function(){
+                return $http.get("/gamesim/get_dispatcher_status2/").then(function(response){
+                    return response.data;
+                })
+            }
+        }
+    });
+    
+    app.factory('GetDispatcherTime2', function(){
+        return{
+            all: function(job_name){
+                return $.post("/gamesim/get_dispatcher_time2/", job_name).then(function(response){
+                    return response;
+                })
+            } 
+        }
+    });
+    
+    app.factory('GetAnalyzeJobStatus', function($http){
+        return {
+            all: function (){
+                return $http.get("/gamesim/get_analyze_job_status/").then(function(response) {
+                    return response.data;
+                })
+            }
+        }       
+    });
+    
+    app.factory('InitializeSimulation', function($http){
+        return {
+                all: function (){
+                return $http.get("/gamesim/initialize_sim/")
+            }
+        }       
+    });
+    
+    app.factory('GetAnalyzedJobData', function(){
+        return{
+            all: function(job_name){
+                return $.post("/gamesim/get_analyzed_job_data/", job_name).then(function(response){
+                    return response;
+                })
+            } 
+        }
+    });
 })();

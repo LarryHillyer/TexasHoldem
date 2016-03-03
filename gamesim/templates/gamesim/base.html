@@ -51,11 +51,11 @@
                             <li><a ui-sref="create_sim ">Create Simulation</a></li>
                             <li><a ui-sref="query_job ">Simulation Queue</a></li>
                             <li><a ui-sref="job_dispatcher">Simulation Dispatcher</a></li>
-                            <li><a ui-sref="analyze_jobs">Create Analysis</a></li>
+                            <li><a ui-sref="analyze_jobs">Query Finished Jobs</a></li>
                             <li><a ui-sref="query_analyze_job" >Select Analysis Jobs</a></li>
                             <li><a ui-sref="analyze_queue">Analysis Queue</a></li>
-                            <li><a href="/gamesim/analyzer_dispatcher/">Analysis Dispatcher</a></li>
-                            <li><a href="/gamesim/initialize_sim/ ">Initialize Simulation</a></li>              
+                            <li><a ui-sref="analyze_dispatcher">Analysis Dispatcher</a></li>
+                            <li><a ui-sref="initialize_simulation">Initialize Simulation</a></li>              
 
                         </ul>
                     </li>
@@ -81,11 +81,11 @@
                         <li><a ui-sref="create_sim"  >Create Simulation</a></li>
                         <li><a ui-sref="query_job" >Simulation Queue</a></li>
                         <li><a ui-sref="job_dispatcher">Simulation Dispatcher</a></li>		
-                        <li><a ui-sref="analyze_jobs" >Analyze Jobs</a></li>
+                        <li><a ui-sref="analyze_jobs" >Query Finished Jobs</a></li>
                         <li><a ui-sref="query_analyze_job" >Select Analysis Jobs</a></li>
                         <li><a ui-sref="analyze_queue">Analysis Queue</a></li>
-                        <li><a href="/gamesim/analyzer_dispatcher/" >Analysis Dispatcher</a></li>        				
-                        <li><a href="/gamesim/initialize_sim/">Initialize Simulation</a></li>
+                        <li><a ui-sref="analyze_dispatcher" >Analysis Dispatcher</a></li>        				
+                        <li><a ui-sref="initialize_simulation">Initialize Simulation</a></li>
                     </ul>       
                     {% endblock %}
                 </div>
@@ -127,7 +127,8 @@
     <script src="{% static 'components/query_analyze_job/query_analyze_job-controller.js' %} "></script>
     <script src="{% static 'components/query_analyze_job/details-controller.js' %} "></script>
     <script src="{% static 'components/analyze_queue/analyze_queue-controller.js' %} "></script>
-    
+    <script src="{% static 'components/analyze_dispatcher/analyze_dispatcher-controller.js' %} "></script>
+    <script src="{% static 'components/initialize-simulation/initialize-simulation-controller.js' %} "></script>
 </body>
 
 </html>

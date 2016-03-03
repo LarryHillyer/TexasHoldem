@@ -12,12 +12,14 @@
                     <li><input type="checkbox" ng-model="selectedAll" ng-click="checkAll(selectedAll)" />Check All</li>
                     <li ng-repeat="job in finished_job_list"><input type="checkbox" ng-model="job.selected" /><a ng-click="goAnalysisJob()" ui-sref="analyze_job({analyze_job_name: job.job_name})" >{{job.job_name}}</a></li>
                 </ul>
+                <p>{{error}}</p>
     </div>
     
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Close</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="goAnalysisQueue()" >View Analysis Queue</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="goAnalysisDispatcher()" >Run Analysis Queue</button>        
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="goCreateAnalysisJob()" >Create Analysis Job</button>
+        <button ng-if="analysisJobList.length" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="goAnalysisQueue()" >View Analysis Queue</button>
+        <button ng-if="analysisJobList.length" type="button" class="btn btn-success" data-dismiss="modal" ng-click="goAnalysisDispatcher()" >Run Analysis Queue</button>        
     </div>
     
 </div>

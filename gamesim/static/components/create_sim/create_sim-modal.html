@@ -37,7 +37,8 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Cancel</button>
             <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="putSimJob()">Save changes</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="queryJob()">View Queue</button>                       
+            <button ng-if="pending_job_list.length" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="viewQueue()">View Queue</button>                       
+            <button ng-if="pending_job_list.length" type="button" class="btn btn-success" data-dismiss="modal" ng-click="runQueue()">Start Dispatcher</button> 
         </div>
     </div>
 </div>

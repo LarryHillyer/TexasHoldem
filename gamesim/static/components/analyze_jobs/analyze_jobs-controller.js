@@ -11,7 +11,7 @@ app.controller("AnalyzeJobsController", function($scope, $rootScope, $uibModal){
      
 })
 
-app.controller("ModalInstanceCtrl4", function($scope, $rootScope, $uibModalInstance, putPlayers2, putStartDate2, putEndDate2, PutAnalyzeFormData) {
+app.controller("ModalInstanceCtrl4", function($scope, $state, $rootScope, $uibModalInstance, putPlayers2, putStartDate2, putEndDate2, PutAnalyzeFormData) {
     
     $rootScope.analyzeFormData = {}
     var analyzeFormData1 = {}
@@ -149,7 +149,10 @@ app.controller("ModalInstanceCtrl4", function($scope, $rootScope, $uibModalInsta
         analyzeFormData1['start_date'] = $rootScope.analyzeFormData.start_date.toISOString()
         analyzeFormData1['end_date'] = $rootScope.analyzeFormData.end_date.toISOString()
         var analyzeFormDataJSON1 = JSON.stringify(analyzeFormData1)
-        PutAnalyzeFormData.all({'analyze_form_data':analyzeFormDataJSON1})
+        PutAnalyzeFormData.all({'analyze_form_data':analyzeFormDataJSON1}).then(function(){
+            $uibModalInstance.dismiss('cancel')
+            $state.go("query_analyze_job")
+        })      
     }
     
 })

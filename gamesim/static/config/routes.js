@@ -77,6 +77,13 @@ app.config(function($stateProvider, $urlRouterProvider){
         controllerAs: "adc1"
     })
     
+    .state ("initialize_simulation", {
+        url:"/initialize_simulation",
+        templateUrl:"/static/components/initialize-simulation/initialize-simulation.html",
+        controller:"InitializeController",
+        controllerAs: "ic" 
+    })
+    
     
     
 })

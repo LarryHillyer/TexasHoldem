@@ -59,10 +59,15 @@ function update_dispatcher() {
         ResetDispatcher.all()
     }
     
-    $scope.goJob_Dispatcher = function () {
+    $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel')
         $state.go("job_dispatcher")     
-    }    
+    } 
+    
+    $scope.queryFinishedJobs = function() {
+       $uibModalInstance.dismiss('cancel')
+       $state.go("analyze_jobs") 
+    }   
     
     update_dispatcher();
     

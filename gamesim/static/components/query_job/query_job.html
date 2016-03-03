@@ -3,7 +3,7 @@
     <div ng-show="pending_job_list.length">
         <h3>Simulation Queue</h3>
         <button type="button" class="btn btn-primary" ng-click="open('lg')">View Pending Jobs</button>
-        <button type="button" class="btn btn-primary" ng-click="start_dispatcher()" >Run Pending Jobs</button>
+        <button type="button" class="btn btn-success" ng-click="start_dispatcher()" >Start Dispatcher</button>
     </div>
     
     <div ng-show="!pending_job_list.length">

@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.core.urlresolvers import reverse
+from django.http import HttpResponse, Http404
+#from django.core.urlresolvers import reverse
 from django.db.models import Q
 
 
@@ -9,14 +9,15 @@ from gamesim.models import Simulation_Job , python_scripts, cards, hands, \
     dispatcher_time2, dispatcher_status2, finished_jobs, analyzed_jobs, \
     analyze_job_status, grand_summary_data
 
-from gamesim.forms import dispatcher_status_form, dispatcher_status2_form
+#from gamesim.forms import dispatcher_status_form
         
 from gamesim.serializers import Simulation_Job_Serializer, \
     dispatcher_status_serializer, loop_status_serializer, \
     dispatcher_time_serializer, analyzed_jobs_serializer, \
     finished_jobs_serializer, analyze_job_status_serializer, \
     dispatcher_status2_serializer, dispatcher_time2_serializer, \
-    analyzed_jobs_serializer
+    analyzed_jobs2_serializer
+    
 
 from rest_framework.decorators import  APIView 
 from rest_framework import status
@@ -29,7 +30,7 @@ import subprocess
 import pytz
 import numpy as np
 
-root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\texasholdem1\\'
+root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\TexasHoldem\\'
 app_dir = 'gamesim\\'
 sim_script_dir = 'sim_scripts\\'
 
@@ -680,110 +681,7 @@ class get_analysis_job_list(APIView):
         
         return Response(analyze_job_list.data)        
 
-              
-class initialize_sim(APIView):
-
-    def del_initial_objects(self):
-        try:           
-            py_scripts1 = python_scripts.objects.all()
-            py_scripts1.delete()
-            players1 = players.objects.all()
-            players1.delete()
-            cards1 = cards.objects.all()
-            cards1.delete()
-            hands1 = hands.objects.all()
-            hands1.delete()
-            hole_hands1 = hole_hands.objects.all()
-            hole_hands1.delete()
-            grand_summary = grand_summary_data.objects.all()
-            grand_summary.delete()
-        except:
-            raise Http404
-     
-    def get(self, request):
-        self.del_initial_objects()        
-        form = dispatcher_status_form()
-        return render(request,'gamesim/initialize_sim.html', {'form': form})
-        
-    def start_initializer(self):         
-        args = ['python',  sim_dir + initial_script]
-        subprocess.Popen(args, stdout = subprocess.PIPE)
-        return
-        
-    def post(self, request):
-        self.start_initializer()
-        return HttpResponseRedirect(reverse('gamesim:index'))
-
-
-class analyze_queue(APIView):
-    
-    def get_anal_object(self, status):
-        try:
-            return analyzed_jobs.objects.filter(status=status)
-        except analyzed_jobs.DoesNotExist:
-            raise Http404
-            
-    def get_job_object(self, pk):
-        try:
-            ds1 = dispatcher_status2.objects.get(pk=pk)
-            if ds1.status == 'Reset':
-                ds1.status = 'Stopped'
-                ds1.job_name = ''
-                ds1.save()           
-            return ds1
-        except:
-            ds1 = dispatcher_status2.objects.all().delete()
-            ds1 = dispatcher_status2(status = 'Stopped')
-            ds1.id = 1
-            ds1.save()
-            return ds1
-            
-        
-    def get_analyze_job_status_objects(self):
-        try:            
-            return analyze_job_status.objects.all()
-        except:
-            raise Http404
-    
-                 
-    def get(self, request):
-        
-        pending_job_list = None
-        dispatch_status1 = self.get_job_object(pk=1)
-        if dispatch_status1.status == 'Stopped':
-            pending_job_list = self.get_anal_object(status = 'pending')
-        elif dispatch_status1.status == 'Finished':
-            dispatch_status1.status = 'Stopped'
-            dispatch_status1.save()
-            pending_job_list = self.get_anal_object(status = 'pending')            
-              
-        analyze_status1 = self.get_analyze_job_status_objects()
-        analyze_status1.delete()        
-         
-        form = dispatcher_status2_form()
-        context = {'pending_job_list':pending_job_list, 'form':form}
-        return render(request, 'gamesim/analyze_queue.html', context)
-        
-    def post(self, request):
-
-        pending_job_list = None
-        dispatch_status1 = self.get_job_object(pk=1)
-        if dispatch_status1.status == 'Stopped':
-            pending_job_list = self.get_anal_object(status = 'pending')
-        elif dispatch_status1.status == 'Finished':
-            dispatch_status1.status = 'Stopped'
-            dispatch_status1.save()
-            pending_job_list = self.get_anal_object(status = 'pending')            
-        
-        self.put_analyze_job_status_objects( pending_job_list[0].job_name)          
-        form = dispatcher_status2_form() 
-        context = {'pending_job_list':pending_job_list, 'form':form}
-        
-        if form.is_valid():
-           return HttpResponseRedirect(reverse('gamesim:analyzer_dispatcher'))
-        return render(request, 'gamesim/analyze_queue.html', context)
-        
-class analyzer_dispatcher(APIView):
+class start_dispatcher2(APIView):
     
     def get_object(self, pk):
         
@@ -791,17 +689,7 @@ class analyzer_dispatcher(APIView):
             return dispatcher_status2.objects.get(pk=pk)
         except dispatcher_status2.DoesNotExist:
             raise Http404
-        
-    def get(self, request):
-        dispatcher_status1 =  self.get_object(pk=1)   
-        if dispatcher_status1.status == 'Finished':
-            dispatcher_status1.status = 'Stopped'
-            dispatcher_status1.save()
-        
-        context = {'dispatcher_status1':dispatcher_status1}
-        print('get')
-        return render(request, 'gamesim/analyzer_dispatcher.html', context)
-        
+    
     def get_first_job_id(self, status):      
         try:
             jobs = analyzed_jobs.objects.filter(status=status)
@@ -836,70 +724,18 @@ class analyzer_dispatcher(APIView):
         subprocess.Popen(args, stdout = subprocess.PIPE)
         return
         
-    def post(self, request):
+    def get(self, request):
         self.start_dispatcher()
         
-        dispatcher_status1 =  self.get_object(pk=1)
-        if dispatcher_status1.status == 'Finished':
-            dispatcher_status1.status = 'Stopped'
-            dispatcher_status1.save()
+        dispatcher_status2 =  self.get_object(pk=1)
+        if dispatcher_status2.status == 'Finished':
+            dispatcher_status2.status = 'Stopped'
+            dispatcher_status2.save()
         print('post')
-        context = {'dispatcher_status1':dispatcher_status1}
-        
-        return render(request, 'gamesim/analyzer_dispatcher.html', context)
-        
-class get_dispatcher_status2(APIView):
-
-    def get_object(self, pk):
-        try:
-            return dispatcher_status2.objects.get(pk=pk)
-        except dispatcher_status2.DoesNotExist:
-            raise Http404
       
-    def get(self,request):
-        print('get')
-        status_id = request.GET['dispatcher_status1_id']
-        dispatcher_status1 = self.get_object(status_id)
-        serializer = dispatcher_status2_serializer(dispatcher_status1)
-        return Response(serializer.data)
+        dispatcher_status2 = dispatcher_status_serializer(dispatcher_status2)
+        return Response(dispatcher_status2.data)
         
-class get_dispatcher_time2(APIView):
-    
-    def get_object(self, job_name):
-        try:
-            return analyzed_jobs.objects.get(job_name=job_name)
-        except dispatcher_status.DoesNotExist:
-            raise Http404
-      
-    def get(self,request):
-        job_name = request.GET['running_job_name']
-        dispatcher_status1 = self.get_object(job_name)
-        initial_time = dispatcher_status1.run_time
-        current_time = dt.datetime.now(pytz.utc)
-        job_time = current_time - initial_time
-        hrs = math.floor(job_time.seconds/3600)
-        min_secs = job_time.seconds - hrs*3600 
-        mins = math.floor(min_secs/60)
-        secs = min_secs - mins*60
-        time_delta = dt.time(hour=hrs, minute=mins, second=secs)
-        dispatcher_time1 = dispatcher_time2(time_delta=time_delta)
-        serializer = dispatcher_time2_serializer(dispatcher_time1)
-        return Response(serializer.data)
-        
-class get_analyze_job_status(APIView):
-    
-    def get_object(self):
-        try:
-            return analyze_job_status.objects.all()
-        except loop_status.DoesNotExist:
-            raise Http404
-          
-    def get(self, request):
-        analyze_job_status1 = self.get_object()
-        
-        serializer = analyze_job_status_serializer(analyze_job_status1, many = True)
-        return Response(serializer.data)
-
 class reset_dispatcher2(APIView):
     
     def set_object(self):
@@ -926,7 +762,105 @@ class reset_dispatcher2(APIView):
         self.set_object()
         return Response("")
 
+class get_dispatcher_status2(APIView):
 
+    def get_object(self, pk):
+        try:
+            return dispatcher_status2.objects.get(pk=pk)
+        except dispatcher_status2.DoesNotExist:
+            raise Http404
+      
+    def get(self,request):
+        print(request.GET)
+        #status_id = request.GET['dispatcher_status1_id']
+        dispatcher_status1 = self.get_object(pk=1)
+        serializer = dispatcher_status2_serializer(dispatcher_status1)
+        return Response(serializer.data)
+        
+class get_dispatcher_time2(APIView):
+    
+    def get_object(self, job_name):
+        try:
+            return analyzed_jobs.objects.get(job_name=job_name)
+        except dispatcher_status.DoesNotExist:
+            raise Http404
+      
+    def post(self,request):
+        job_name = request.POST['running_job_name']
+        dispatcher_status1 = self.get_object(job_name)
+        initial_time = dispatcher_status1.run_time
+        current_time = dt.datetime.now(pytz.utc)
+        job_time = current_time - initial_time
+        hrs = math.floor(job_time.seconds/3600)
+        min_secs = job_time.seconds - hrs*3600 
+        mins = math.floor(min_secs/60)
+        secs = min_secs - mins*60
+        time_delta = dt.time(hour=hrs, minute=mins, second=secs)
+        dispatcher_time1 = dispatcher_time2(time_delta=time_delta)
+        serializer = dispatcher_time2_serializer(dispatcher_time1)
+        return Response(serializer.data)
+        
+class get_analyze_job_status(APIView):
+    
+    def get_object(self):
+        try:
+            return analyze_job_status.objects.all()
+        except loop_status.DoesNotExist:
+            raise Http404
+          
+    def get(self, request):
+        analyze_job_status1 = self.get_object()
+        
+        serializer = analyze_job_status_serializer(analyze_job_status1, many = True)
+        return Response(serializer.data)
+              
+
+class initialize_sim(APIView):
+
+    def del_initial_objects(self):
+        try:           
+            py_scripts1 = python_scripts.objects.all()
+            py_scripts1.delete()
+            players1 = players.objects.all()
+            players1.delete()
+            cards1 = cards.objects.all()
+            cards1.delete()
+            hands1 = hands.objects.all()
+            hands1.delete()
+            hole_hands1 = hole_hands.objects.all()
+            hole_hands1.delete()
+            grand_summary = grand_summary_data.objects.all()
+            grand_summary.delete()
+        except:
+            raise Http404
+        
+    def start_initializer(self):         
+        args = ['python',  sim_dir + initial_script]
+        subprocess.Popen(args, stdout = subprocess.PIPE)
+        return
+        
+    def get(self, request):
+        print("first break")
+        self.del_initial_objects() 
+        print("second break")
+        self.start_initializer()
+        print("third break")
+        return Response()
+
+class get_analyzed_job_data(APIView):
+    
+    def get_object(self, analyzed_job_name):
+        try:
+            return analyzed_jobs.objects.get(job_name = analyzed_job_name)
+        except loop_status.DoesNotExist:
+            raise Http404
+    
+    def post(self, request):
+        analyzed_job_name = request.POST['analyzed_job_name']
+        analyzed_job = self.get_object(analyzed_job_name)
+        analyzed_job = analyzed_jobs2_serializer(analyzed_job.data)
+        
+        return Response(analyzed_job.data)
 
 class SimStatus(APIView):
     
@@ -1475,3 +1409,72 @@ class analyze(APIView):
 
         return HttpResponseRedirect(reverse('gamesim:query_jobs'))
 """
+"""
+class analyze_queue(APIView):
+    
+    def get_anal_object(self, status):
+        try:
+            return analyzed_jobs.objects.filter(status=status)
+        except analyzed_jobs.DoesNotExist:
+            raise Http404
+            
+    def get_job_object(self, pk):
+        try:
+            ds1 = dispatcher_status2.objects.get(pk=pk)
+            if ds1.status == 'Reset':
+                ds1.status = 'Stopped'
+                ds1.job_name = ''
+                ds1.save()           
+            return ds1
+        except:
+            ds1 = dispatcher_status2.objects.all().delete()
+            ds1 = dispatcher_status2(status = 'Stopped')
+            ds1.id = 1
+            ds1.save()
+            return ds1
+            
+        
+    def get_analyze_job_status_objects(self):
+        try:            
+            return analyze_job_status.objects.all()
+        except:
+            raise Http404
+    
+                 
+    def get(self, request):
+        
+        pending_job_list = None
+        dispatch_status1 = self.get_job_object(pk=1)
+        if dispatch_status1.status == 'Stopped':
+            pending_job_list = self.get_anal_object(status = 'pending')
+        elif dispatch_status1.status == 'Finished':
+            dispatch_status1.status = 'Stopped'
+            dispatch_status1.save()
+            pending_job_list = self.get_anal_object(status = 'pending')            
+              
+        analyze_status1 = self.get_analyze_job_status_objects()
+        analyze_status1.delete()        
+         
+        form = dispatcher_status2_form()
+        context = {'pending_job_list':pending_job_list, 'form':form}
+        return render(request, 'gamesim/analyze_queue.html', context)
+        
+    def post(self, request):
+
+        pending_job_list = None
+        dispatch_status1 = self.get_job_object(pk=1)
+        if dispatch_status1.status == 'Stopped':
+            pending_job_list = self.get_anal_object(status = 'pending')
+        elif dispatch_status1.status == 'Finished':
+            dispatch_status1.status = 'Stopped'
+            dispatch_status1.save()
+            pending_job_list = self.get_anal_object(status = 'pending')            
+        
+        self.put_analyze_job_status_objects( pending_job_list[0].job_name)          
+        form = dispatcher_status2_form() 
+        context = {'pending_job_list':pending_job_list, 'form':form}
+        
+        if form.is_valid():
+           return HttpResponseRedirect(reverse('gamesim:analyzer_dispatcher'))
+        return render(request, 'gamesim/analyze_queue.html', context)
+"""        

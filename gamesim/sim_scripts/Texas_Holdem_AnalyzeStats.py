@@ -8,7 +8,7 @@ import json
 import numpy as np
 import sys
 import os
-import time
+#import time
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "texasholdem1.settings")
 
 import mysql.connector
@@ -23,6 +23,7 @@ import matplotlib.patches as mpatches
 
 from mpl_toolkits.mplot3d import axes3d 
 from matplotlib import cm
+import mpld3
 
 def set_global_sql_variables():
     try:
@@ -374,9 +375,10 @@ def getPlayerPieChart(player_probs, player_probs_list, number_of_games, fig_type
         str(len(players)) + ' Players')
 
     #fig1.show()
-    fig1.savefig(str(len(players))+'P_'+str(number_of_games)+'G_PPC' + fig_type)
+    p_pc= mpld3.fig_to_dict(fig1)
+    fig1.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_PPC' + fig_type+'.SVG')
     fig1.clf()
-    return
+    return p_pc
     
 ###############################################################################
 ########### HandType Probability Bar Chart ####################################
@@ -424,7 +426,8 @@ def getHandTypeBarChart(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
        str(len(players)) + ' Players')
 
     #fig2.show()
-    fig2.savefig(str(len(players))+'P_'+str(number_of_games)+'G_HTPBC' + \
+    ht_bc= mpld3.fig_to_dict(fig2)
+    fig2.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_HTPBC' + \
     fig_type)
     
     plt.clf()
@@ -458,7 +461,8 @@ def getHandTypeProbTable(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
     ax13.add_table(ht1)
 
     #fig13.show()
-    fig13.savefig(str(len(players))+'P_'+str(number_of_games)+'G_HTT'+ fig_type)
+    ht_pt= mpld3.fig_to_dict(fig13)
+    fig13.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_HTT'+ fig_type)
     
     plt.clf()
     
@@ -498,8 +502,9 @@ def getSurfacePlot():
         str(len(players)) + ' Players')
         
     #fig4.show()
-    fig4.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP')
-    
+    sp= mpld3.fig_to_dict(fig4)
+    fig4.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP')
+    plt.clf()
     return
     
 def getRelProbTable():
@@ -592,8 +597,9 @@ def getRelProbTable():
 
 
     #fig12.show()
-    fig12.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPT')
-    
+    rp_t= mpld3.fig_to_dict(fig12)
+    fig12.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPT')
+    plt.clf()
     return
     
 ###############################################################################
@@ -632,8 +638,9 @@ def getSuitedNonPairedContourPlot():
 
  
     #fig5.show()
-    fig5.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSNPCP')
-    
+    s_np_cp= mpld3.fig_to_dict(fig5)
+    fig5.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSNPCP')
+    plt.clf()
     return
     
 ###############################################################################
@@ -672,8 +679,9 @@ def getNonSuitedNonPairedContourPlot():
         str(len(players)) + ' Players')
  
     #fig6.show()
-    fig6.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPNSNPCP')
-    
+    ns_np_cp= mpld3.fig_to_dict(fig6)
+    fig6.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPNSNPCP')
+    plt.clf()
     return
     
 ###############################################################################
@@ -708,8 +716,9 @@ def getPairedContourPlot():
         str(len(players)) + ' Players')
  
     #fig7.show()
-    fig7.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPPCP')
-    
+    p_cp= mpld3.fig_to_dict(fig7)
+    fig7.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPPCP')
+    plt.clf()
     return
 
 ###############################################################################
@@ -747,8 +756,9 @@ def getRelProbBarChart():
     ax8.legend(fontsize = 10, loc = (.05,.85))
     
     #fig8.show()
-    fig8.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPBC')
-    
+    rp_bc= mpld3.fig_to_dict(fig8)
+    fig8.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPBC')
+    plt.clf()
     return
 
 ###############################################################################
@@ -770,8 +780,9 @@ def getRelProbScatterPlot():
         str(len(players)) + ' Players')
 
     #fig9.show()
-    fig9.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSCP')
-    
+    rp_sp= mpld3.fig_to_dict(fig9)
+    fig9.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSCP')
+    plt.clf()
     return
 
 ###############################################################################
@@ -809,8 +820,9 @@ def getPossibleWinsPlot():
         str(len(players)) + ' Players')
        
     #fig10.show()
-    fig10.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_PWPNPSCP')
-
+    pw_p= mpld3.fig_to_dict(fig10)
+    fig10.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_PWPNPSCP')
+    plt.clf()
     return
 
 def getPossibleWinsTable():
@@ -891,9 +903,34 @@ def getPossibleWinsTable():
     ax11_4.add_table(wnp4)
 
     #fig11.show()
-    fig11.savefig(str(len(players))+'P_'+str(total_number_of_games2)+'G_PWPNPT') 
-
-    return 
+    pw_t= mpld3.fig_to_dict(fig11)
+    fig11.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_PWPNPT') 
+    plt.clf()
+    return
+    
+def put_analyzed_data(analyzed_job_data, job_name):
+    
+    try:
+        cnx = mysql.connector.connect(user=db_params['username'], password = \
+            db_params['password'], database= db_params['database'])    
+        cur = cnx.cursor()
+        update_analyze_jobs = ("update gamesim_analyzed_jobs "
+                            "set analyzed_job_data = %(analyzed_job_data)s "
+                            "where job_name = %(job_name)s;")
+        
+        update_data = {'job_name': job_name, \
+                        'analyzed_job_data': analyzed_job_data}                    
+        cur.execute(update_analyze_jobs, update_data)
+                    
+        cnx.commit() 
+        cnx.close()
+    
+    except mysql.connector.Error as e:
+        print(e.args[0])
+        print(e.args[1])
+        cnx.close()
+    
+    return
     
 def update_status(status_parameter, job_name):
     
@@ -1012,7 +1049,7 @@ def put_finish_time():
 db_params = {'username':'texasholdem', 'password': 'Texasholdem123', \
     'database': 'texasholdem_db'}
 
-root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\texasholdem1\\'
+root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\TexasHoldem\\'
 
 analyze_id = sys.argv[1]
 run_time = get_run_time(analyze_id)
@@ -1046,10 +1083,10 @@ player_grand_probs_list = getPlayerList(player_grand_probs)
 
 update_status(1, job_name)
 
-getPlayerPieChart(player_probs, player_probs_list, total_number_of_games2, \
-    '_S')
+p_pc_job = getPlayerPieChart(player_probs, player_probs_list, \
+    total_number_of_games2, '_S')
 
-getPlayerPieChart(player_grand_probs, player_grand_probs_list, \
+p_pc_gs = getPlayerPieChart(player_grand_probs, player_grand_probs_list, \
     grand_total_number_of_games, '_GS')
     
 update_status(2, job_name)
@@ -1124,6 +1161,9 @@ update_status(12, job_name)
 
 getPossibleWinsTable()   
 update_status(13, job_name)
+
+analyzed_job_data = json.dumps([{'p_pc_job':p_pc_job}])
+put_analyzed_data(analyzed_job_data, job_name)
 
 finish_time = dt.datetime.now(pytz.utc)
 put_finish_time()    
