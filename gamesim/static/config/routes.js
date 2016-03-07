@@ -77,6 +77,29 @@ app.config(function($stateProvider, $urlRouterProvider){
         controllerAs: "adc1"
     })
     
+    .state ("query_analyzed_jobs", {
+        url: "/query_analyzed_jobs",
+        templateUrl: "/static/components/query_analyzed_jobs/query_analyzed_jobs.html",
+        controller: "QueryAnalyzedJobsController",
+        controllerAs: "qajc"
+    })
+    
+    .state ("charts", {
+        url:"/query_analyzed_jobs/:analyzed_job_name",
+        templateUrl:"/static/components/query_analyzed_jobs/charts.html",
+        controller:"ChartsController",
+        controllerAs: "cc1"    
+    })
+    
+    .state ("chart", {
+        url:"/query_analyzed_jobs/:analyzed_job_name/:chart_name",
+        templateUrl:"/static/components/query_analyzed_jobs/charts.html",
+        controller:"ChartController",
+        controllerAs: "cc2"    
+    })
+    
+    
+    
     .state ("initialize_simulation", {
         url:"/initialize_simulation",
         templateUrl:"/static/components/initialize-simulation/initialize-simulation.html",

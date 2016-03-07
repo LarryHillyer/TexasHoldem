@@ -263,6 +263,8 @@ class analyzed_jobs(models.Model):
     summary_data = jsonfield.JSONField(null = True)
     analyzed_files = jsonfield.JSONField(null = True)
     analyzed_job_data = jsonfield.JSONField(null=True)
+    num_games = models.CharField(max_length =20, null = True)
+    grand_num_games = models.CharField(max_length = 20, null = True)
     
     
     class Meta:

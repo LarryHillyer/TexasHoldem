@@ -15,7 +15,8 @@ from gamesim.views import  index, \
     put_analyze_form_data, get_finished_job_list, put_analyze_job, \
     get_analysis_job_list, initialize_sim,  \
     reset_dispatcher2, get_dispatcher_status2, get_dispatcher_time2, \
-    get_analyze_job_status, start_dispatcher2, get_analyzed_job_data 
+    get_analyze_job_status, start_dispatcher2, get_analyzed_job_data, \
+    get_analyzed_jobs_list
     
     
 """
@@ -64,6 +65,8 @@ urlpatterns = [
         'get_dispatcher_time2'),
     url(r'^get_analyze_job_status/$', get_analyze_job_status.as_view(), \
         name = 'get_analyze_job_status'),
+    url(r'^get_analyzed_jobs_list/$', get_analyzed_jobs_list.as_view(), \
+        name = 'get_analyze_job_list'),
     url(r'^get_analyzed_job_data/$', get_analyzed_job_data.as_view(), \
         name = 'get_analyzed_job_data'),
         

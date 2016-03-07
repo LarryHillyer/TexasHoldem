@@ -24,6 +24,7 @@ import matplotlib.patches as mpatches
 from mpl_toolkits.mplot3d import axes3d 
 from matplotlib import cm
 import mpld3
+from mpld3 import plugins
 
 def set_global_sql_variables():
     try:
@@ -255,7 +256,7 @@ def getCardLabels():
             high_card_labels.append(card)
     return low_card_labels, high_card_labels
     
-def getCoordinatesForSurfaces():
+def getCoordinatesForSurfaces(hole_hand_rel_probs):
 
     pair_card, low_card, high_card = [],[],[]   
     rel_probsP, rel_probsS, rel_probsNS = [],[],[]
@@ -375,6 +376,8 @@ def getPlayerPieChart(player_probs, player_probs_list, number_of_games, fig_type
         str(len(players)) + ' Players')
 
     #fig1.show()
+    plugins.clear(fig1)
+    plugins.connect(fig1, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())
     p_pc= mpld3.fig_to_dict(fig1)
     fig1.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_PPC' + fig_type+'.SVG')
     fig1.clf()
@@ -426,11 +429,14 @@ def getHandTypeBarChart(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
        str(len(players)) + ' Players')
 
     #fig2.show()
+    plugins.clear(fig2)
+    plugins.connect(fig2, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())
     ht_bc= mpld3.fig_to_dict(fig2)
     fig2.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_HTPBC' + \
     fig_type)
-    
     plt.clf()
+    
+    return ht_bc
     
 def getHandTypeProbTable(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
     average_winning_hand_type_prob_sorted1, hand_type_cum_probs_sorted1, \
@@ -469,6 +475,27 @@ def getHandTypeProbTable(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
 ###############################################################################
 ##############  Relative Probaility Surface Plot ##############################
 ###############################################################################
+def getDataFromCardRanks(rel_probs_data):
+    output = []
+    cnt = 0
+    for i, cardI in enumerate(card_ranks):
+        rel_probs = []
+        if i == len(card_ranks) - 1:
+            break
+        output.append(rel_probs)
+        for j in range(i+1, len(card_ranks)):
+            rel_probs.append(rel_probs_data[cnt])
+            cnt+=1
+        for j in range(0,i):
+            rel_probs.append(0)
+    return output
+    
+    #for i, x in enumerate(x_data):
+        #rel_probs = []
+        #output.append(rel_probs)
+        #for i, y in enumerate(y_data):
+            #rel_probs.append(rel_probs_data)
+
     
 def getSurfacePlot():
     fig4 = plt.figure('Relative Probability by HoleHand')
@@ -502,10 +529,16 @@ def getSurfacePlot():
         str(len(players)) + ' Players')
         
     #fig4.show()
+    rel_probs_s = getDataFromCardRanks(rel_probsS)
+    
+    rel_probs_s = {'rel_probs_s': rel_probs_s}
+
+    plugins.clear(fig4)
+    plugins.connect(fig4, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())    
     sp= mpld3.fig_to_dict(fig4)
     fig4.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP')
     plt.clf()
-    return
+    return rel_probs_s
     
 def getRelProbTable():
     fig12 = plt.figure('Relative Probability Table')
@@ -908,18 +941,24 @@ def getPossibleWinsTable():
     plt.clf()
     return
     
-def put_analyzed_data(analyzed_job_data, job_name):
+def put_analyzed_data(analyzed_job_data, job_name, total_number_of_games2, \
+    grand_total_number_of_games):
     
     try:
         cnx = mysql.connector.connect(user=db_params['username'], password = \
             db_params['password'], database= db_params['database'])    
         cur = cnx.cursor()
         update_analyze_jobs = ("update gamesim_analyzed_jobs "
-                            "set analyzed_job_data = %(analyzed_job_data)s "
-                            "where job_name = %(job_name)s;")
+                    "set analyzed_job_data = %(analyzed_job_data)s, "
+                    "num_games = %(num_games)s, "
+                    "grand_num_games = %(grand_num_games)s "
+                    "where job_name = %(job_name)s;")
         
         update_data = {'job_name': job_name, \
-                        'analyzed_job_data': analyzed_job_data}                    
+                'analyzed_job_data': analyzed_job_data,
+                'num_games': total_number_of_games2,
+                'grand_num_games': grand_total_number_of_games}
+                    
         cur.execute(update_analyze_jobs, update_data)
                     
         cnx.commit() 
@@ -1063,7 +1102,7 @@ set_global_sql_variables()
 #os.chdir(root_dir)
 #from gamesim.models import analyze_job_status
 #aj1 = create_analyze_job_status()
-
+analyzed_job_data = []
         
 players, card_suits, card_ranks, card_rank_numbers, hand_types, \
     hand_type_ranks, permutations, total_number_of_games2, player_wins_total, \
@@ -1085,9 +1124,13 @@ update_status(1, job_name)
 
 p_pc_job = getPlayerPieChart(player_probs, player_probs_list, \
     total_number_of_games2, '_S')
+    
+analyzed_job_data.append({'p_pc_job':p_pc_job})
 
-p_pc_gs = getPlayerPieChart(player_grand_probs, player_grand_probs_list, \
+p_pc_gt = getPlayerPieChart(player_grand_probs, player_grand_probs_list, \
     grand_total_number_of_games, '_GS')
+    
+analyzed_job_data.append({'p_pc_gt':p_pc_gt})
     
 update_status(2, job_name)
 
@@ -1100,13 +1143,17 @@ hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
     hand_type_cum_grand_probs_sorted = \
     getWinningHandProbs(hand_type_grand_probs, hand_type_grand_probs2)
     
-getHandTypeBarChart(hand_type_probs_sorted, hand_type_probs2_sorted, \
+ht_bc_job = getHandTypeBarChart(hand_type_probs_sorted, hand_type_probs2_sorted, \
     average_winning_hand_type_prob_sorted, hand_type_cum_probs_sorted, \
-    '_S', total_number_of_games2)    
+    '_S', total_number_of_games2) 
     
-getHandTypeBarChart(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
+analyzed_job_data.append({'ht_bc_job':ht_bc_job})
+    
+ht_bc_gt = getHandTypeBarChart(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
     average_winning_hand_type_grand_prob_sorted, hand_type_cum_grand_probs_sorted, \
     '_GS', grand_total_number_of_games)
+    
+analyzed_job_data.append({'ht_bc_gt':ht_bc_gt})    
 
 update_status(3, job_name)
 
@@ -1121,9 +1168,12 @@ getHandTypeProbTable(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted
 update_status(4, job_name)
 
 low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
-    rel_probsP_ribbon = getCoordinatesForSurfaces()
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_probs)
     
-getSurfacePlot()
+rel_probs_s = getSurfacePlot()
+
+analyzed_job_data.append({'rel_probs_s':rel_probs_s})
+
 update_status(5, job_name)
 
 getRelProbTable()
@@ -1162,8 +1212,9 @@ update_status(12, job_name)
 getPossibleWinsTable()   
 update_status(13, job_name)
 
-analyzed_job_data = json.dumps([{'p_pc_job':p_pc_job}])
-put_analyzed_data(analyzed_job_data, job_name)
+analyzed_job_data = json.dumps(analyzed_job_data)
+put_analyzed_data(analyzed_job_data, job_name, total_number_of_games2, \
+    grand_total_number_of_games)
 
 finish_time = dt.datetime.now(pytz.utc)
 put_finish_time()    

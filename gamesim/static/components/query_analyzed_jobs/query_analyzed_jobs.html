@@ -1,0 +1,9 @@
+<div>
+    <br/>
+    <h3 ng-if="analyzed_jobs_list.length">Finished Jobs for Selected Time Period</h3>
+    <h3 ng-if="!analyzed_jobs_list.length">No Jobs Found for Selected Time Period</h3>
+    <br/><br/>
+    <button ng-if="analyzed_jobs_list.length" type="button" class="btn btn-primary" ng-click="open('lg')">
+        View Query Results
+    </button>
+</div>

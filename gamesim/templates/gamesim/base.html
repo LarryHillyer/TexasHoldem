@@ -12,7 +12,7 @@
     <link href="{% static 'css/bootstrap-responsive.min.css' %}" rel="stylesheet">
 
     <link href="{% static 'plugins/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
-    <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
+    <!--<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">-->
 
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
 
@@ -24,7 +24,6 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top" ">
         <div class="container-fluid ">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -55,6 +54,7 @@
                             <li><a ui-sref="query_analyze_job" >Select Analysis Jobs</a></li>
                             <li><a ui-sref="analyze_queue">Analysis Queue</a></li>
                             <li><a ui-sref="analyze_dispatcher">Analysis Dispatcher</a></li>
+                            <li><a ui-sref="query_analyzed_jobs" >Select Analyzed Jobs</a></li>
                             <li><a ui-sref="initialize_simulation">Initialize Simulation</a></li>              
 
                         </ul>
@@ -82,9 +82,10 @@
                         <li><a ui-sref="query_job" >Simulation Queue</a></li>
                         <li><a ui-sref="job_dispatcher">Simulation Dispatcher</a></li>		
                         <li><a ui-sref="analyze_jobs" >Query Finished Jobs</a></li>
-                        <li><a ui-sref="query_analyze_job" >Select Analysis Jobs</a></li>
+                        <li><a ui-sref="query_analyze_job" >Select Jobs To Analyze</a></li>
                         <li><a ui-sref="analyze_queue">Analysis Queue</a></li>
-                        <li><a ui-sref="analyze_dispatcher" >Analysis Dispatcher</a></li>        				
+                        <li><a ui-sref="analyze_dispatcher" >Analysis Dispatcher</a></li>
+                        <li><a ui-sref="query_analyzed_jobs" >Select Analyzed Jobs</a></li>        				
                         <li><a ui-sref="initialize_simulation">Initialize Simulation</a></li>
                     </ul>       
                     {% endblock %}
@@ -110,13 +111,14 @@
 
     <script src="{% static 'plugins/bootstrap/dist/js/bootstrap.min.js' %} "></script>
     <script src="{% static 'plugins/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js' %} "></script>
+    
+    <script src="{% static 'plugins/d3/d3.min.js' %} "></script>
+    <script src="{% static 'js/test.js' %} "></script>
+    <script src="{% static 'js/surface3d.js' %} "></script>
 
     <script src ="{% static 'config/init.js' %} "></script>
     <script src ="{% static 'config/routes.js' %} "></script>
     <script src ="{% static 'config/resources.js' %} "></script>
-
-    <!--<script src="{% static 'js/gamesim-ajax.js' %} "></script>-->
-    <script src="{% static 'js/gamesim-ajax1.js' %} "></script>
 
     <script src="{% static 'components/home/home-controller.js' %} "></script>
     <script src="{% static 'components/create_sim/create_sim-controller.js' %} "></script>
@@ -128,6 +130,9 @@
     <script src="{% static 'components/query_analyze_job/details-controller.js' %} "></script>
     <script src="{% static 'components/analyze_queue/analyze_queue-controller.js' %} "></script>
     <script src="{% static 'components/analyze_dispatcher/analyze_dispatcher-controller.js' %} "></script>
+    <script src="{% static 'components/query_analyzed_jobs/query_analyzed_jobs-controller.js' %} "></script>
+    <script src="{% static 'components/query_analyzed_jobs/charts-controller.js' %} "></script>
+    <script src="{% static 'components/query_analyzed_jobs/chart-controller.js' %} "></script>
     <script src="{% static 'components/initialize-simulation/initialize-simulation-controller.js' %} "></script>
 </body>
 

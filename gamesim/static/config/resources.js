@@ -229,4 +229,14 @@
             } 
         }
     });
+    
+    app.factory('GetAnalyzedJobsList', function($http){
+        return{
+            all: function(){
+                return $http.get("/gamesim/get_analyzed_jobs_list/").then(function(response){
+                    return response.data;
+                })
+            }
+        }
+    })
 })();
