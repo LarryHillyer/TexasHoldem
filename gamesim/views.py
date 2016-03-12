@@ -678,7 +678,7 @@ class get_analysis_job_list(APIView):
         analyze_status1.delete()
         
         analyze_job_list = analyzed_jobs_serializer(analyze_job_list, many = True)
-        
+        print(analyze_job_list.data)
         return Response(analyze_job_list.data)        
 
 class start_dispatcher2(APIView):
@@ -833,7 +833,7 @@ class get_analyzed_job_data(APIView):
         analyzed_job_name = request.POST['analyzed_job_name']
         analyzed_job = self.get_object(analyzed_job_name)
         analyzed_job = analyzed_jobs2_serializer(analyzed_job.data)
-        
+        print(analyzed_job.data)
         return Response(analyzed_job.data)
 
 class initialize_sim(APIView):

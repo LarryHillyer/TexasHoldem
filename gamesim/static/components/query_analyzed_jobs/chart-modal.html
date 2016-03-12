@@ -4,8 +4,12 @@
         <h4 ng-if="selectedChart" class="modal-title">Job: {{job_name}}  |  Chart: {{selectedChart}}  |  {{selectedJob.num_players}} Players  |  {{selectedJob.num_games}} Games  |  Grand Total: {{selectedJob.grand_num_games}} Games</h4>
     </div>
     <div class="modal-body modal-body-style">
-        <div id="testC"></div>
-        <div id="surfTest"></div>    
+        <div id="testC" ></div>
+        <!--<div id="surfTest"></div>-->
+        <div id="pngTest" ng-if = "showChart">
+            <img src="{{fileS}}" alt="" ng-if = "showChart" width = "600px" height="400px" >      
+        </div>
+            
     </div>
     </div>
         <div class="modal-footer">

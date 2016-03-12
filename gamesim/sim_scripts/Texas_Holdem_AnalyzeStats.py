@@ -529,14 +529,15 @@ def getSurfacePlot():
         str(len(players)) + ' Players')
         
     #fig4.show()
-    rel_probs_s = getDataFromCardRanks(rel_probsS)
-    
+    #rel_probs_s = getDataFromCardRanks(rel_probsS)
+        
+    rel_probs_s = job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP.svg'
     rel_probs_s = {'rel_probs_s': rel_probs_s}
 
     plugins.clear(fig4)
     plugins.connect(fig4, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())    
-    sp= mpld3.fig_to_dict(fig4)
-    fig4.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP')
+    #sp= mpld3.fig_to_dict(fig4)
+    fig4.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP.svg')
     plt.clf()
     return rel_probs_s
     
@@ -1089,12 +1090,13 @@ db_params = {'username':'texasholdem', 'password': 'Texasholdem123', \
     'database': 'texasholdem_db'}
 
 root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\TexasHoldem\\'
-
+#root_dir = 'C:\\'
 analyze_id = sys.argv[1]
 run_time = get_run_time(analyze_id)
 job_name = 'analyze' + str(sys.argv[1])
 
-data_dir = 'gamesim\\sim_scripts\\data_dir\\'
+#data_dir = '\\static\\img\\'
+data_dir = 'gamesim\\static\\img\\'
 os.chdir(root_dir + data_dir)
 
 set_global_sql_variables()

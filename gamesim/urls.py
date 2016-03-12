@@ -18,7 +18,10 @@ from gamesim.views import  index, \
     get_analyze_job_status, start_dispatcher2, get_analyzed_job_data, \
     get_analyzed_jobs_list
     
-    
+from django.conf import settings 
+from django.conf.urls.static import static 
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+   
 """
     job_queue,  job_dispatcher, \
     get_dispatcher_status,  get_loop_status, \
@@ -80,7 +83,11 @@ urlpatterns = [
     url(r'^CPU3/(?P<cpu3loopdata_id>[0-9]+)/$', views.details3, \
         name = 'details3'),
 
-]
+]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+#+= staticfiles_urlpatterns()
+# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 url = format_suffix_patterns(urlpatterns)
 

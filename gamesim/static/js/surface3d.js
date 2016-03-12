@@ -1,6 +1,6 @@
  (function(){
   var Surface=function(node){
-    var heightFunction,colorFunction,timer,timer,transformPrecalc=[];
+    var heightFunction,colorFunction,timer,transformPrecalc=[];
     var displayWidth=300, displayHeight=300, zoom=1;
     var trans;
 
@@ -14,11 +14,12 @@
       var data=node.datum();
       var output=[];
       var xlength=data.length;
-      var ylength=data[0].length;
+    //var ylength=data[0].length;
       for(var x=0;x<xlength;x++){
+        var ylength=data[x].length;  
         output.push(t=[]);
         for(var y=0;y<ylength;y++){
-            var value=heightFunction(data[x][y],x,y);
+            var value=-25*heightFunction(data[x][y],x,y);
             t.push(value);
         }
       }
@@ -36,8 +37,9 @@
       var t, output=[];
       var heights=getHeights();
       var xlength=data.length;
-      var ylength=data[0].length;
+      
       for(var x=0;x<xlength;x++){
+        var ylength=data[x].length;  
         output.push(t=[]);
         for(var y=0;y<ylength;y++){
           t.push(transformPoint([(x-xlength/2)/(xlength*1.41)*displayWidth*zoom, heights[x][y]*zoom, (y-ylength/2)/(ylength*1.41)*displayWidth*zoom]));
@@ -49,10 +51,11 @@
       var originalData=node.datum();
       var data=getTransformedData();
       var xlength=data.length;
-      var ylength=data[0].length;
+    //   var ylength=data[0].length;
       var d0=[];
       var idx=0;
       for(var x=0;x<xlength-1;x++){
+        var ylength=data[x].length;  
         for(var y=0;y<ylength-1;y++){
           var depth=data[x][y][2]+data[x+1][y][2]+data[x+1][y+1][2]+data[x][y+1][2];
           d0.push({

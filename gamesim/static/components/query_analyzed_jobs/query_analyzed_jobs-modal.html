@@ -11,6 +11,7 @@
                     <!--<li><input type="checkbox" ng-model="selectedAll" ng-click="checkAll(selectedAll)" />Check All</li>-->
                     <li ng-repeat="job in analyzed_jobs_list"><a ng-click="goCharts(job)" ui-sref="charts({analyzed_job_name: job.job_name})" >{{job.job_name}}</a></li>
                 </ul>
+                <div id="surfTest"></div> 
                 <p>{{error}}</p>
     </div>
     
