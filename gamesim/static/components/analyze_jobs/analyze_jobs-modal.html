@@ -1,0 +1,41 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>        
+        <h3 class="modal-title">Analyze Jobs</h3>
+    </div>
+    
+    <div class="modal-body modal-body-style">      
+        <form>
+            <div class="form-group">
+                    <label for="playersSelect">Select Number Of Players: </label>
+                    <select name="playersSelect" id="playersSelect" ng-model="num_players.playersSelect" ng-change="putPlayers2(num_players.playersSelect)">
+                        <option ng-repeat="option in num_players.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+            </div>
+            
+            <label for="start_date">Start Date: </label><br/>
+            <div class="input-group input-group-sm">
+                <input id="start_date" name="start_date" type="text" class="form-control" uib-datepicker-popup ng-model="analyzeFormData.start_date" is-open="startDate.opened" 
+                    datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openStartDate()"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>
+            
+            <label for="end_date">End Date: </label><br/>
+            <div class="input-group input-group-sm">    
+                <input id="end_date" name="end_date" type="text" class="form-control" uib-datepicker-popup ng-model="analyzeFormData.end_date" is-open="endDate.opened" 
+                    datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openEndDate()"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>             
+                   
+        </form>        
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="putAnalyzeQueue()" >Display Finished Jobs</button>        
+    </div>
+</div>

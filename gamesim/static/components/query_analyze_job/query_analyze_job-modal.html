@@ -1,0 +1,25 @@
+
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>        
+        <h3 ng-if="finished_job_list.length" class="modal-title">Finished Jobs For Selected Time period</h3>
+        <h3 ng-if="!finished_job_list.length" class="modal-title">No Jobs Found for Selected Time Period</h3>
+    </div>
+    
+    <div class="modal-body modal-body-style">      
+            <h4 class="modal-title" ng-if="finished_job_list.length">Select Jobs To Analyze</h4>
+                <ul ng-if="finished_job_list.length" class="finished_job_list">
+                    <li><input type="checkbox" ng-model="selectedAll" ng-click="checkAll(selectedAll)" />Check All</li>
+                    <li ng-repeat="job in finished_job_list"><input type="checkbox" ng-model="job.selected" /><a ng-click="goAnalysisJob()" ui-sref="analyze_job({analyze_job_name: job.job_name})" >{{job.job_name}}</a></li>
+                </ul>
+                <p>{{error}}</p>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="goCreateAnalysisJob()" >Create Analysis Job</button>
+        <button ng-if="analysisJobList.length" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="goAnalysisQueue()" >View Analysis Queue</button>
+        <button ng-if="analysisJobList.length" type="button" class="btn btn-success" data-dismiss="modal" ng-click="goAnalysisDispatcher()" >Run Analysis Queue</button>        
+    </div>
+    
+</div>

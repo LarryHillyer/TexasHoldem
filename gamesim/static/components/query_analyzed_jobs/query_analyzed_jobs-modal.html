@@ -1,0 +1,22 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>        
+        <h3 ng-if="analyzed_jobs_list.length" class="modal-title">Finished Jobs For Selected Time period</h3>
+        <h3 ng-if="!analyzed_jobs_list.length" class="modal-title">No Jobs Found for Selected Time Period</h3>
+    </div>
+    
+    <div class="modal-body modal-body-style">      
+            <h4 class="modal-title" ng-if="analyzed_jobs_list.length">Select Jobs To Analyze</h4>
+                <ul ng-if="analyzed_jobs_list.length" class="finished_job_list">
+                    <!--<li><input type="checkbox" ng-model="selectedAll" ng-click="checkAll(selectedAll)" />Check All</li>-->
+                    <li ng-repeat="job in analyzed_jobs_list"><a ng-click="goCharts(job)" ui-sref="charts({analyzed_job_name: job.job_name})" >{{job.job_name}}</a></li>
+                </ul>
+                <div id="surfTest"></div> 
+                <p>{{error}}</p>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Close</button>
+    </div>
+    
+</div>

@@ -190,7 +190,7 @@ while pending_jobs != []:
     subprocess.Popen(args, stdout = subprocess.PIPE)
     
     job_running = get_running_job(next_job['simulation_job_id'])
-    
+    print("job_dispatcher script")
     while job_running == True:
         job_running = get_running_job(next_job['simulation_job_id'])
         if job_running == False:

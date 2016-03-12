@@ -1,0 +1,1 @@
+var app = angular.module("game-sim", ["ui.router", "ui.bootstrap"])

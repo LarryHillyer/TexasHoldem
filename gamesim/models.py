@@ -3,7 +3,7 @@ import jsonfield
 import datetime as dt
 from django.utils import timezone
 
-root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\texasholdem1\\'
+root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\TexasHoldem\\'
 app_dir = 'gamesim\\'
 sim_script_dir = 'sim_scripts\\'
 
@@ -217,6 +217,7 @@ class grand_summary_data(models.Model):
     hole_hand_wins_total = jsonfield.JSONField(null=True)
     hole_hand_tied_wins_total = jsonfield.JSONField(null=True)
     hole_hand_hands_total = jsonfield.JSONField(null=True)
+    analyzed_gs_data = jsonfield.JSONField(null=True)
     
     
 class finished_jobs(models.Model):
@@ -261,6 +262,10 @@ class analyzed_jobs(models.Model):
         
     summary_data = jsonfield.JSONField(null = True)
     analyzed_files = jsonfield.JSONField(null = True)
+    analyzed_job_data = jsonfield.JSONField(null=True)
+    num_games = models.CharField(max_length =20, null = True)
+    grand_num_games = models.CharField(max_length = 20, null = True)
+    
     
     class Meta:
         ordering = ('run_time',)

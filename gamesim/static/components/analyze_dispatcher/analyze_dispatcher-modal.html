@@ -1,0 +1,111 @@
+<!--<div>
+    <br/>
+    <b id="analyze_job" ></b><br />
+    <b id="analyze_dispatcher_status">Job Dispatcher is: {{ dispatcher_status1.status }}</b><br/>
+    <b id="analyze_dispatcher_time">Job has ran for: </b><br />
+    <br />
+    <button id="analyze_reset_dispatch" type="button">Reset Dispatcher</button>
+    <br />
+    <br />
+
+    <table id="analyze_update"> 
+	   <tbody id="tbody">
+	   </tbody>
+    </table>
+</div>-->
+
+<div>
+    <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" ng-click="goJob_Dispatcher()" >&times;</span></button>       
+        <h3 class="modal-title">Simulation Dispatcher</h3>
+
+    </div>
+
+    <div class="modal-body modal-body-style">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="dispatcher-content">
+
+                        <b ng-show="dispatcher_status2.job_name" id="job_name">{{dispatcher_status2.job_name}}</b>
+                        <br />
+                        <br />
+                        <b id="job_dispatcher_status">Job Dispatcher is: {{ dispatcher_status2.status }}</b>
+                        <br/>
+                        <b ng-show="dispatcher_status2.job_name" id="dispatcher_time">Job has ran for: {{time}}</b>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="dispatcher-table">
+                        <table ng-if="dispatcher_status2.job_name" id="analyze_update">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Chart Type </th>
+                                    <th scope="col"> Status</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-if="renderTable" id="tbody">
+                                <tr ng-if="p_pc_status" >
+                                    <td>Player Pie Chart Status: </td>
+                                    <td>{{p_pc_value}}</td>    
+                                </tr>
+                                <tr ng-if="ht_bc_status" >
+                                    <td>Hand Type Bar Chart Status: </td>
+                                    <td>{{ht_bc_value}}</td>    
+                                </tr>
+                                <tr ng-if="ht_pt_status" >
+                                    <td>Hand Type Prob Table Status: </td>
+                                    <td>{{ht_pt_value}}</td>    
+                                </tr>
+                                <tr ng-if="sp_status" >
+                                    <td>Surface Plot Status: </td>
+                                    <td>{{sp_value}}</td>    
+                                </tr>
+                                <tr ng-if="rp_t_status" >
+                                    <td>Relative Prob Table Status: </td>
+                                    <td>{{rp_t_value}}</td>    
+                                </tr>
+                                <tr ng-if="s_np_cp_status" >
+                                    <td>Suited NonPaired Contour Plot Status: </td>
+                                    <td>{{s_np_cp_value}}</td>    
+                                </tr>
+                                <tr ng-if="ns_np_cp_status" >
+                                    <td>NonSuited NonPaired Contour Plot Status: </td>
+                                    <td>{{ns_np_cp_value}}</td>    
+                                </tr>
+                                <tr ng-if="p_cp_status" >
+                                    <td>Paired Contour Plot Status: </td>
+                                    <td>{{p_cp_value}}</td>    
+                                </tr>
+                                <tr ng-if="rp_bc_status" >
+                                    <td>Relative Prob Bar Chart Status: </td>
+                                    <td>{{rp_bc_value}}</td>    
+                                </tr>
+                                <tr ng-if="rp_sp_status" >
+                                    <td>Relative Prob Scatter Plot Status: </td>
+                                    <td>{{rp_sp_value}}</td>    
+                                </tr>
+                                <tr ng-if="pw_p_status" >
+                                    <td>Percent Winning Plot Status: </td>
+                                    <td>{{pw_p_value}}</td>    
+                                </tr>
+                                <tr ng-if="pw_t_status" >
+                                    <td>Percent Winning Table Status: </td>
+                                    <td>{{pw_t_value}}</td>    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goJob_Dispatcher()">Close</button>
+        <button type="button" class="btn btn-danger" ng-click="resetDispatcher()">Reset Dispatcher</button>
+    </div>
+
+</div>
