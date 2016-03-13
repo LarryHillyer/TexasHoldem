@@ -115,6 +115,11 @@ function update_dispatcher() {
     $scope.goJob_Dispatcher = function () {
         $uibModalInstance.dismiss('cancel')
         $state.go("analyze_dispatcher")     
+    }
+    
+    $scope.goSelectJobs = function () {
+        $uibModalInstance.dismiss('cancel')
+        $state.go("query_analyzed_jobs")     
     }    
     
     update_dispatcher();

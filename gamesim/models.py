@@ -3,7 +3,7 @@ import jsonfield
 import datetime as dt
 from django.utils import timezone
 
-root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\TexasHoldem\\'
+root_dir = 'C:\\Source\\TexasHoldem\\'
 app_dir = 'gamesim\\'
 sim_script_dir = 'sim_scripts\\'
 

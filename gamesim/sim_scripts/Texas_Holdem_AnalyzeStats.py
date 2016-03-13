@@ -289,7 +289,7 @@ def getCoordinatesForSurfaces(hole_hand_rel_probs):
 ##### on sorted Relative Probability1
 ###############################################################################
 
-def getRelProbsSorted():
+def getRelProbsSorted(hole_hand_rel_probs, hole_hand_rel_probs2):
 
     rel_probs_sorted = np.sort(list(hole_hand_rel_probs.values()))
 
@@ -375,13 +375,17 @@ def getPlayerPieChart(player_probs, player_probs_list, number_of_games, fig_type
     plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
 
-    #fig1.show()
-    plugins.clear(fig1)
-    plugins.connect(fig1, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())
-    p_pc= mpld3.fig_to_dict(fig1)
+    p_pc = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_PPC' + fig_type+'.SVG'
+    p_pc = {'p_pc'+ fig_type: p_pc}
+    
+    
     fig1.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_PPC' + fig_type+'.SVG')
     fig1.clf()
     return p_pc
+    #fig1.show()
+    #plugins.clear(fig1)
+    #plugins.connect(fig1, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())
+    #p_pc= mpld3.fig_to_dict(fig1)
     
 ###############################################################################
 ########### HandType Probability Bar Chart ####################################
@@ -427,16 +431,22 @@ def getHandTypeBarChart(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
     
     plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
        str(len(players)) + ' Players')
+       
+    ht_bc = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games) + \
+        'G_HTPBC' + fig_type+'.SVG'
+        
+    fig2.savefig(ht_bc)    
+        
+    ht_bc = {'ht_bc'+ fig_type: ht_bc}
 
-    #fig2.show()
-    plugins.clear(fig2)
-    plugins.connect(fig2, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())
-    ht_bc= mpld3.fig_to_dict(fig2)
-    fig2.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_HTPBC' + \
-    fig_type)
     plt.clf()
     
     return ht_bc
+    
+    #fig2.show()
+    #plugins.clear(fig2)
+    #plugins.connect(fig2, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())
+    #ht_bc= mpld3.fig_to_dict(fig2)
     
 def getHandTypeProbTable(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
     average_winning_hand_type_prob_sorted1, hand_type_cum_probs_sorted1, \
@@ -466,11 +476,16 @@ def getHandTypeProbTable(hand_type_probs_sorted1, hand_type_probs2_sorted1, \
         fontsize = 10)
     ax13.add_table(ht1)
 
-    #fig13.show()
-    ht_pt= mpld3.fig_to_dict(fig13)
-    fig13.savefig(job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_HTT'+ fig_type)
+    ht_pt = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_HTT'+ fig_type + '.SVG'
+    fig13.savefig(ht_pt)
+    ht_pt = {'ht_pt'+ fig_type: ht_pt}
     
     plt.clf()
+    
+    return ht_pt
+    
+    #fig13.show()
+    #ht_pt= mpld3.fig_to_dict(fig13)
     
 ###############################################################################
 ##############  Relative Probaility Surface Plot ##############################
@@ -497,7 +512,8 @@ def getDataFromCardRanks(rel_probs_data):
             #rel_probs.append(rel_probs_data)
 
     
-def getSurfacePlot():
+def getSurfacePlot(number_of_games, fig_type):
+    
     fig4 = plt.figure('Relative Probability by HoleHand')
     ax4= fig4.gca(projection='3d')
 
@@ -525,23 +541,27 @@ def getSurfacePlot():
     plt.legend(handles = [lightgreen_patch, blue_patch, red_patch], fontsize = 10,\
         loc = (.65,.75))
     
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
         
+    rel_probs = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPSP.svg'
+    fig4.savefig(rel_probs)
+    rel_probs = {'rel_probs'+fig_type: rel_probs}
+    
+    plt.clf()
+    
+    return rel_probs
+    
+    
     #fig4.show()
     #rel_probs_s = getDataFromCardRanks(rel_probsS)
-        
-    rel_probs_s = job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP.svg'
-    rel_probs_s = {'rel_probs_s': rel_probs_s}
-
-    plugins.clear(fig4)
-    plugins.connect(fig4, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())    
+    #plugins.clear(fig4)
+    #plugins.connect(fig4, plugins.Reset(), plugins.BoxZoom(), plugins.Zoom())    
     #sp= mpld3.fig_to_dict(fig4)
-    fig4.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSP.svg')
-    plt.clf()
-    return rel_probs_s
     
-def getRelProbTable():
+    
+    
+def getRelProbTable(hole_hand_rel_probs, fig_type):
     fig12 = plt.figure('Relative Probability Table')
 
     ax12_0 = fig12.add_axes([0.05,.925,.9,.001], label = 'ax12_0')
@@ -630,16 +650,19 @@ def getRelProbTable():
     ax12_2.add_table(rp2)
 
 
-    #fig12.show()
-    rp_t= mpld3.fig_to_dict(fig12)
-    fig12.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPT')
+    rel_probs_t = job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPT' + fig_type + '.SVG'
+    fig12.savefig(rel_probs_t)
+    rel_probs_t = {'rel_probs_t'+fig_type: rel_probs_t}
     plt.clf()
-    return
+    return rel_probs_t
+    
+    #fig12.show()
+    #rp_t= mpld3.fig_to_dict(fig12)
     
 ###############################################################################
 ##########  Suit NonPaired Contour Plot #######################################
 ###############################################################################
-def getSuitedNonPairedContourPlot():
+def getSuitedNonPairedContourPlot( number_of_games, fig_type):
     fig5 = plt.figure('Suited NonPaired Relative Probability by HoleHand')
     ax5 = fig5.add_axes([0.1, 0.1, 0.8, 0.8])
 
@@ -667,20 +690,22 @@ def getSuitedNonPairedContourPlot():
     ax5.set_xlabel('Low Card')
     ax5.set_ylabel('High Card')
 
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
 
- 
-    #fig5.show()
-    s_np_cp= mpld3.fig_to_dict(fig5)
-    fig5.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSNPCP')
+    s_np_cp = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPSNPCP' + fig_type + '.svg'
+    fig5.savefig(s_np_cp)
+    s_np_cp = {'s_np_cp'+fig_type: s_np_cp}
     plt.clf()
-    return
+    return s_np_cp
+    
+    #fig5.show()
+    #s_np_cp= mpld3.fig_to_dict(fig5)
     
 ###############################################################################
 ##########  NonSuit NonPaired Contour Plot ####################################
 ###############################################################################
-def getNonSuitedNonPairedContourPlot():
+def getNonSuitedNonPairedContourPlot(number_of_games, fig_type):
     
     fig6 = plt.figure('NonSuited NonPaired Relative Probability by HoleHand')
     ax6 = fig6.add_axes([0.1, 0.1, 0.8, 0.8])
@@ -709,19 +734,23 @@ def getNonSuitedNonPairedContourPlot():
     ax6.set_xlabel('Low Card')
     ax6.set_ylabel('High Card')
 
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
  
-    #fig6.show()
-    ns_np_cp= mpld3.fig_to_dict(fig6)
-    fig6.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPNSNPCP')
+    ns_np_cp = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPNSNPCP'+fig_type+'.svg'
+    fig6.savefig(ns_np_cp)
+    ns_np_cp = {'ns_np_cp'+fig_type: ns_np_cp}
+    
     plt.clf()
-    return
+    return ns_np_cp
+    
+    #fig6.show()
+    #ns_np_cp= mpld3.fig_to_dict(fig6)
     
 ###############################################################################
 ##########  NonSuit NonPaired Contour Plot ####################################
 ###############################################################################
-def getPairedContourPlot():
+def getPairedContourPlot(number_of_games, fig_type):
     fig7 = plt.figure('Paired Relative Probability by HoleHand')
     ax7 = fig7.add_axes([0.1, 0.1, 0.8, 0.8])
 
@@ -746,19 +775,24 @@ def getPairedContourPlot():
     ax7.set_xlabel('Card 1')
     ax7.set_ylabel('Card 2')
 
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
  
-    #fig7.show()
-    p_cp= mpld3.fig_to_dict(fig7)
-    fig7.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPPCP')
+    
+    p_cp = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPPCP'+ fig_type+'.svg' 
+    fig7.savefig(p_cp )
+    p_cp = {'p_cp'+fig_type:p_cp}
+    
     plt.clf()
-    return
+    return p_cp
+    
+    #fig7.show()
+    #p_cp= mpld3.fig_to_dict(fig7)
 
 ###############################################################################
 #####  Relative Probability Bar Chart #########################################    
 ###############################################################################
-def getRelProbBarChart():
+def getRelProbBarChart(rel_probs_keys_sorted, rel_probs_sorted, rel_probs2_sorted, number_of_games, fig_type):
     index = np.arange(len(rel_probs_keys_sorted))
     bar_width = .5
 
@@ -772,7 +806,7 @@ def getRelProbBarChart():
         height = rel_probs2_sorted, color = 'red', label = 'Rel_Prob_2')
     
     ax8.set_title('Sorted Winning Relative Probability(1&2) by HoleHand, ' + \
-        str(total_number_of_games2) + ' Games, ' + str(len(players)) + \
+        str(number_of_games) + ' Games, ' + str(len(players)) + \
         ' Players',fontsize = 10)
     
     xticks1 = np.arange(0,184.8,16.8)
@@ -789,16 +823,21 @@ def getRelProbBarChart():
 
     ax8.legend(fontsize = 10, loc = (.05,.85))
     
-    #fig8.show()
-    rp_bc= mpld3.fig_to_dict(fig8)
-    fig8.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPBC')
+    
+    rp_bc = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPBC' + fig_type + '.svg'
+    fig8.savefig(rp_bc)
+    rp_bc = {'rp_bc'+fig_type:rp_bc}
+    
     plt.clf()
-    return
+    return rp_bc
+    
+    #fig8.show()
+    #rp_bc= mpld3.fig_to_dict(fig8)
 
 ###############################################################################
 ######  Scatter Plot: Relative Probability 2 to Relative Probability
 ###############################################################################
-def getRelProbScatterPlot():
+def getRelProbScatterPlot(rel_probs3_x, rel_probs3_y, number_of_games, fig_type):
     fig9 = plt.figure('Relative Probability Vs. Relative Probability 2')
     ax9 = fig9.add_axes([0.1, 0.2, 0.8, 0.7])
 
@@ -810,21 +849,23 @@ def getRelProbScatterPlot():
     ax9.set_xlabel('Winning Relative Probability1')
     ax9.set_ylabel('Winning Relative Probability2')
 
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
 
-    #fig9.show()
-    rp_sp= mpld3.fig_to_dict(fig9)
-    fig9.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_RPSCP')
+    rp_sp = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPSCP' + fig_type + '.svg'
+    fig9.savefig(rp_sp)
+    rp_sp = {'rp_sp'+fig_type:rp_sp}
     plt.clf()
-    return
+    return rp_sp
 
+    #fig9.show()
+    #rp_sp= mpld3.fig_to_dict(fig9
 ###############################################################################
 ###### Plot, Percent Possible Wins vs. Percent Not Played, Sort by Rel Prob
 ###############################################################################
-def getPossibleWinsData():
+def getPossibleWinsData(hole_hand_rel_probs, hole_hand_rel_probs2, hole_hand_probs):
     rel_probs_keys_sorted, rel_probs_sorted, rel_probs2_sorted = \
-    getRelProbsSorted()
+    getRelProbsSorted(hole_hand_rel_probs, hole_hand_rel_probs2)
     hole_hand_type_probs = getHoleHandProbs()
     hole_hand_probs_sorted = \
         getDistinctHoleHands2ProbsSorted(rel_probs_keys_sorted,\
@@ -839,7 +880,7 @@ def getPossibleWinsData():
     
     return percent_not_played_x, percent_possible_wins_y 
 
-def getPossibleWinsPlot():
+def getPossibleWinsPlot(percent_not_played_x, percent_possible_wins_y, number_of_games, fig_type):
     fig10 = plt.figure('Percent Possible Wins Vs. Percent Not Played')
     ax10 = fig10.add_axes([.1,.2,.8,.7])
 
@@ -850,16 +891,20 @@ def getPossibleWinsPlot():
     ax10.set_xlabel('Percent Not Played')
     ax10.set_ylabel('Percent Possible Wins')
 
-    plt.figtext(.1,.05, str(total_number_of_games2) + ' Games,  ' + \
+    plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
        
-    #fig10.show()
-    pw_p= mpld3.fig_to_dict(fig10)
-    fig10.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_PWPNPSCP')
+    pw_p = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_PWPNPSCP' + fig_type + '.svg'
+    fig10.savefig(pw_p)
+    pw_p = {'pw_p'+fig_type:pw_p}
     plt.clf()
-    return
+    return pw_p
+    
+    #fig10.show()
+    #pw_p= mpld3.fig_to_dict(fig10)
 
-def getPossibleWinsTable():
+def getPossibleWinsTable(percent_not_played_x,percent_possible_wins_y, \
+    rel_probs_keys_sorted, number_of_games, fig_type):
     fig11 = plt.figure('PercentPossibleWins vs. PercentNotPlayed Table')
 
     ax11_0 = fig11.add_axes([0.0125,.025,.175,.001], label = 'ax11_0')
@@ -936,12 +981,14 @@ def getPossibleWinsTable():
     wnp4 = plt.table(colLabels=clabels, cellText = data4, loc = 'top',fontsize = 10)
     ax11_4.add_table(wnp4)
 
-    #fig11.show()
-    pw_t= mpld3.fig_to_dict(fig11)
-    fig11.savefig(job_name+ '_'+ str(len(players))+'P_'+str(total_number_of_games2)+'G_PWPNPT') 
+    pw_t = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_PWPNPT' + fig_type + '.svg'
+    fig11.savefig(pw_t)
+    pw_t = {'pw_t'+fig_type:pw_t}
     plt.clf()
-    return
+    return pw_t
     
+    #fig11.show()
+    #pw_t= mpld3.fig_to_dict(fig11)
 def put_analyzed_data(analyzed_job_data, job_name, total_number_of_games2, \
     grand_total_number_of_games):
     
@@ -1089,7 +1136,7 @@ def put_finish_time():
 db_params = {'username':'texasholdem', 'password': 'Texasholdem123', \
     'database': 'texasholdem_db'}
 
-root_dir = 'C:\\Users\\Larry\\SkyDrive\\Python\\Django\\TexasHoldem\\'
+root_dir = 'C:\\Source\\TexasHoldem\\'
 #root_dir = 'C:\\'
 analyze_id = sys.argv[1]
 run_time = get_run_time(analyze_id)
@@ -1125,14 +1172,14 @@ player_grand_probs_list = getPlayerList(player_grand_probs)
 update_status(1, job_name)
 
 p_pc_job = getPlayerPieChart(player_probs, player_probs_list, \
-    total_number_of_games2, '_S')
+    total_number_of_games2, '_job')
     
-analyzed_job_data.append({'p_pc_job':p_pc_job})
+analyzed_job_data.append(p_pc_job)
 
 p_pc_gt = getPlayerPieChart(player_grand_probs, player_grand_probs_list, \
-    grand_total_number_of_games, '_GS')
+    grand_total_number_of_games, '_gt')
     
-analyzed_job_data.append({'p_pc_gt':p_pc_gt})
+analyzed_job_data.append(p_pc_gt)
     
 update_status(2, job_name)
 
@@ -1147,55 +1194,119 @@ hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
     
 ht_bc_job = getHandTypeBarChart(hand_type_probs_sorted, hand_type_probs2_sorted, \
     average_winning_hand_type_prob_sorted, hand_type_cum_probs_sorted, \
-    '_S', total_number_of_games2) 
+    '_job', total_number_of_games2) 
     
-analyzed_job_data.append({'ht_bc_job':ht_bc_job})
+analyzed_job_data.append(ht_bc_job)
     
 ht_bc_gt = getHandTypeBarChart(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
     average_winning_hand_type_grand_prob_sorted, hand_type_cum_grand_probs_sorted, \
-    '_GS', grand_total_number_of_games)
+    '_gt', grand_total_number_of_games)
     
-analyzed_job_data.append({'ht_bc_gt':ht_bc_gt})    
+analyzed_job_data.append(ht_bc_gt)    
 
 update_status(3, job_name)
 
-getHandTypeProbTable(hand_type_probs_sorted, hand_type_probs2_sorted, \
+ht_pt_job = getHandTypeProbTable(hand_type_probs_sorted, hand_type_probs2_sorted, \
     average_winning_hand_type_prob_sorted, hand_type_cum_probs_sorted, \
-    '_S', total_number_of_games2)
+    '_job', total_number_of_games2)
+    
+analyzed_job_data.append(ht_pt_job)
 
-getHandTypeProbTable(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
+ht_pt_gt = getHandTypeProbTable(hand_type_grand_probs_sorted, hand_type_grand_probs2_sorted, \
     average_winning_hand_type_grand_prob_sorted, hand_type_cum_grand_probs_sorted, \
-    '_GS', grand_total_number_of_games)
+    '_gt', grand_total_number_of_games)
+    
+analyzed_job_data.append(ht_pt_gt)
     
 update_status(4, job_name)
 
 low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
     rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_probs)
     
-rel_probs_s = getSurfacePlot()
+rel_probs_job = getSurfacePlot(total_number_of_games2, '_job')
 
-analyzed_job_data.append({'rel_probs_s':rel_probs_s})
+analyzed_job_data.append(rel_probs_job)
+
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_grand_probs)
+    
+rel_probs_gt = getSurfacePlot(grand_total_number_of_games, '_gt')
+
+analyzed_job_data.append(rel_probs_gt)
 
 update_status(5, job_name)
 
-getRelProbTable()
+rel_prob_t_job = getRelProbTable(hole_hand_rel_probs,'_job')
+
+analyzed_job_data.append(rel_prob_t_job)
+
+rel_prob_t_gt = getRelProbTable(hole_hand_rel_grand_probs,'_gt')
+
+analyzed_job_data.append(rel_prob_t_gt)
+
 update_status(6, job_name)
+
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_probs)
 
 low_card_labels, high_card_labels = getCardLabels()
 
-getSuitedNonPairedContourPlot()
+s_np_cp_job = getSuitedNonPairedContourPlot(total_number_of_games2, '_job')
+
+analyzed_job_data.append(s_np_cp_job)
+
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_grand_probs)
+
+low_card_labels, high_card_labels = getCardLabels()
+
+s_np_cp_gt = getSuitedNonPairedContourPlot(grand_total_number_of_games, '_gt')
+
+analyzed_job_data.append(s_np_cp_gt)
+
 update_status(7, job_name)
 
-getNonSuitedNonPairedContourPlot()
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_probs)
+
+ns_np_cp_job = getNonSuitedNonPairedContourPlot(total_number_of_games2, '_job')
+
+analyzed_job_data.append(ns_np_cp_job)
+
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_grand_probs)
+
+ns_np_cp_gt = getNonSuitedNonPairedContourPlot(grand_total_number_of_games, '_gt')
+
+analyzed_job_data.append(ns_np_cp_gt)
+
 update_status(8, job_name)
 
-getPairedContourPlot()
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_probs)
+
+p_cp_job = getPairedContourPlot(total_number_of_games2, '_job')
+
+analyzed_job_data.append(p_cp_job)
+
+low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
+    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_grand_probs)
+
+p_cp_gt = getPairedContourPlot(grand_total_number_of_games, '_gt')
+
+analyzed_job_data.append(p_cp_gt)
+
 update_status(9, job_name)
 
 
-rel_probs_keys_sorted, rel_probs_sorted, rel_probs2_sorted = getRelProbsSorted()
+rel_probs_keys_sorted, rel_probs_sorted, rel_probs2_sorted = \
+    getRelProbsSorted(hole_hand_rel_probs, hole_hand_rel_probs2)
 
-getRelProbBarChart()
+rp_bc_job = getRelProbBarChart(rel_probs_keys_sorted, rel_probs_sorted, rel_probs2_sorted, \
+    total_number_of_games2, '_job')
+    
+analyzed_job_data.append(rp_bc_job)
+    
 update_status(10, job_name)
 
 rel_probs3_x = [hole_hand_rel_probs[key] for key in \
@@ -1203,15 +1314,27 @@ rel_probs3_x = [hole_hand_rel_probs[key] for key in \
 rel_probs3_y = [hole_hand_rel_probs2[key] for key in \
     permutations]
     
-getRelProbScatterPlot()
+rp_sp_job = getRelProbScatterPlot(rel_probs3_x, rel_probs3_y, total_number_of_games2, '_job')
+
+analyzed_job_data.append(rp_sp_job)
+
 update_status(11, job_name)
     
-percent_not_played_x, percent_possible_wins_y = getPossibleWinsData()
+percent_not_played_x, percent_possible_wins_y = \
+    getPossibleWinsData(hole_hand_rel_probs, hole_hand_rel_probs2, hole_hand_probs)
     
-getPossibleWinsPlot()
+pw_p_job = getPossibleWinsPlot(percent_not_played_x, percent_possible_wins_y, \
+    total_number_of_games2, '_job')
+
+analyzed_job_data.append(pw_p_job)
+
 update_status(12, job_name)
 
-getPossibleWinsTable()   
+pw_t_job = getPossibleWinsTable(percent_not_played_x,percent_possible_wins_y, \
+    rel_probs_keys_sorted, total_number_of_games2, '_job')
+
+analyzed_job_data.append(pw_t_job)
+   
 update_status(13, job_name)
 
 analyzed_job_data = json.dumps(analyzed_job_data)
