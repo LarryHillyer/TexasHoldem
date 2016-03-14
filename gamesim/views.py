@@ -349,6 +349,7 @@ class put_analyze_form_data(APIView):
     def post(self,request):
         
         analyze_form_data = json.loads(request.POST['analyze_form_data'])
+        print (analyze_form_data)
         num_players = analyze_form_data['num_players']
         start_date = analyze_form_data['start_date']
         start_date = start_date.split('T')[0]

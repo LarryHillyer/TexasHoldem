@@ -8,7 +8,7 @@
         <form>
             <div class="form-group">
                     <label for="playersSelect">Select Number Of Players: </label>
-                    <select name="playersSelect" id="playersSelect" ng-model="num_players.playersSelect" ng-change="putPlayers2(num_players.playersSelect)">
+                    <select name="playersSelect" id="playersSelect" ng-model="num_players.playersSelect" ng-change="putPlayers(num_players.playersSelect)">
                         <option ng-repeat="option in num_players.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
             </div>

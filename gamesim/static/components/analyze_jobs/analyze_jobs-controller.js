@@ -129,7 +129,7 @@ app.controller("ModalInstanceCtrl4", function($scope, $state, $rootScope, $uibMo
         $uibModalInstance.dismiss('cancel')           
     }
     
-    $scope.putPlayers = function($rootScope, num_players) {
+    $scope.putPlayers = function(num_players) {
        putPlayers2.all($rootScope, num_players);
     }
     
@@ -141,7 +141,7 @@ app.controller("ModalInstanceCtrl4", function($scope, $state, $rootScope, $uibMo
         putEndDate2.all($rootScope, end_date)
     }
     
-    $scope.putPlayers($rootScope, $rootScope.num_players.playersSelect)
+    $scope.putPlayers($rootScope.num_players.playersSelect)
     
     $scope.putAnalyzeQueue = function() {
         
