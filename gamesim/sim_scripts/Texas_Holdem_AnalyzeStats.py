@@ -512,7 +512,8 @@ def getDataFromCardRanks(rel_probs_data):
             #rel_probs.append(rel_probs_data)
 
     
-def getSurfacePlot(number_of_games, fig_type):
+def getSurfacePlot(rel_probsS, rel_probsNS, rel_probsP_ribbon,\
+    number_of_games, fig_type):
     
     fig4 = plt.figure('Relative Probability by HoleHand')
     ax4= fig4.gca(projection='3d')
@@ -544,7 +545,8 @@ def getSurfacePlot(number_of_games, fig_type):
     plt.figtext(.1,.05, str(number_of_games) + ' Games,  ' + \
         str(len(players)) + ' Players')
         
-    rel_probs = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+'G_RPSP.svg'
+    rel_probs = job_name+ '_'+ str(len(players))+'P_'+str(number_of_games)+ \
+        'G_RPSP'+fig_type+'.svg'
     fig4.savefig(rel_probs)
     rel_probs = {'rel_probs'+fig_type: rel_probs}
     
@@ -1223,14 +1225,16 @@ update_status(4, job_name)
 low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
     rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_probs)
     
-rel_probs_job = getSurfacePlot(total_number_of_games2, '_job')
+rel_probs_job = getSurfacePlot( rel_probsS, rel_probsNS, rel_probsP_ribbon, \
+    total_number_of_games2, '_job')
 
 analyzed_job_data.append(rel_probs_job)
 
-low_card, high_card, rel_probsS, rel_probsNS, pair_card1, pair_card2,\
-    rel_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_grand_probs)
+low_card, high_card, rel_grand_probsS, rel_grand_probsNS, pair_card1, pair_card2,\
+    rel_grand_probsP_ribbon = getCoordinatesForSurfaces(hole_hand_rel_grand_probs)
     
-rel_probs_gt = getSurfacePlot(grand_total_number_of_games, '_gt')
+rel_probs_gt = getSurfacePlot(rel_grand_probsS, rel_grand_probsNS, \
+    rel_grand_probsP_ribbon, grand_total_number_of_games, '_gt')
 
 analyzed_job_data.append(rel_probs_gt)
 
@@ -1306,6 +1310,16 @@ rp_bc_job = getRelProbBarChart(rel_probs_keys_sorted, rel_probs_sorted, rel_prob
     total_number_of_games2, '_job')
     
 analyzed_job_data.append(rp_bc_job)
+
+rel_grand_probs_keys_sorted, rel_grand_probs_sorted, rel_grand_probs2_sorted = \
+    getRelProbsSorted(hole_hand_rel_grand_probs, hole_hand_rel_grand_probs2)
+
+rp_bc_gt = getRelProbBarChart(rel_grand_probs_keys_sorted, \
+    rel_grand_probs_sorted, rel_grand_probs2_sorted, \
+    grand_total_number_of_games, '_gt')
+    
+analyzed_job_data.append(rp_bc_gt)
+
     
 update_status(10, job_name)
 
@@ -1314,9 +1328,21 @@ rel_probs3_x = [hole_hand_rel_probs[key] for key in \
 rel_probs3_y = [hole_hand_rel_probs2[key] for key in \
     permutations]
     
-rp_sp_job = getRelProbScatterPlot(rel_probs3_x, rel_probs3_y, total_number_of_games2, '_job')
+rp_sp_job = getRelProbScatterPlot(rel_probs3_x, rel_probs3_y, \
+    total_number_of_games2, '_job')
 
 analyzed_job_data.append(rp_sp_job)
+
+rel_grand_probs3_x = [hole_hand_rel_grand_probs[key] for key in \
+    permutations]
+rel_grand_probs3_y = [hole_hand_rel_grand_probs2[key] for key in \
+    permutations]
+    
+rp_sp_gt = getRelProbScatterPlot(rel_grand_probs3_x, rel_grand_probs3_y, \
+    grand_total_number_of_games, '_gt')
+
+analyzed_job_data.append(rp_sp_gt)
+
 
 update_status(11, job_name)
     
@@ -1328,12 +1354,23 @@ pw_p_job = getPossibleWinsPlot(percent_not_played_x, percent_possible_wins_y, \
 
 analyzed_job_data.append(pw_p_job)
 
+grand_percent_not_played_x, grand_percent_possible_wins_y = \
+    getPossibleWinsData(hole_hand_rel_grand_probs, hole_hand_rel_grand_probs2, \
+    hole_hand_grand_probs)
+    
+pw_p_gt = getPossibleWinsPlot(grand_percent_not_played_x, \
+    grand_percent_possible_wins_y, grand_total_number_of_games, '_gt')
+
+analyzed_job_data.append(pw_p_gt)
+
+
 update_status(12, job_name)
 
 pw_t_job = getPossibleWinsTable(percent_not_played_x,percent_possible_wins_y, \
     rel_probs_keys_sorted, total_number_of_games2, '_job')
 
 analyzed_job_data.append(pw_t_job)
+
    
 update_status(13, job_name)
 
