@@ -1,6 +1,8 @@
-app.controller("InitializeController", function($scope, InitializeSimulation){
+app.controller("InitializeController", function($scope, $state, InitializeSimulation){
     
     $scope.initialSimulation = function(){
-        InitializeSimulation.all()
+        InitializeSimulation.all().then(function(){
+            $state.go("home")
+        })
     }
 })

@@ -701,14 +701,14 @@ def combineHoleHandTotals(num_players, permutations, hole_hands_wins_total, \
     for i, permutation in enumerate(permutations):
         
             hole_hands_wins_grand_total[permutation] = \
-                hole_hands_wins_total[permutation] + \
-                + hole_hands_wins_total[permutation]
+                hole_hands_wins_grand_total[permutation] + \
+                hole_hands_wins_total[permutation]
             hole_hands_hands_grand_total[permutation] = \
                 hole_hands_hands_grand_total[permutation] + \
                 hole_hands_hands_total[permutation]
             hole_hands_tied_wins_grand_total[permutation] = \
                 hole_hands_tied_wins_grand_total[permutation] + \
-                hole_hands_tied_wins_grand_total[permutation]
+                hole_hands_tied_wins_total[permutation]
             
     return hole_hands_wins_grand_total, hole_hands_hands_grand_total, \
         hole_hands_tied_wins_grand_total

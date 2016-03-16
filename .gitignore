@@ -1,5 +1,6 @@
 gamesim/static/plugins
-gamesim\sim_scripts\data_dir
+gamesim/sim_scripts/data_dir
+gamesim/static/img
 bower_components
 node_modules
 Thumbs.db
