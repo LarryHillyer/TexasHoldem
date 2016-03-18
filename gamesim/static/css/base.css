@@ -6,6 +6,7 @@ margin:30px;
 #sidebar {
 float:left;
 margin:10px;
+
 }
 
 .title {
@@ -21,7 +22,10 @@ background-size: cover;
 }
 
 .sidebar {
-    color:darkslateblue;
+    color:darkblue;
+    background-color:grey;
+    text-align:center;
+    padding-bottom:20px;
 }
 
 .content {
@@ -35,8 +39,17 @@ background-size: cover;
 .job-options {
     list-style-type: none;
     padding:0; 
-    margin:0;
+    margin:20px;
+    background-color:grey;
+    color:darkblue;
 }
+a {
+    list-style-type: none;
+    padding:0; 
+    margin:0;
+    color:darkblue;
+}
+
 .modal-body-style {
     height:475px;
 }

@@ -1,4 +1,4 @@
-gamesim/static/plugins
+
 gamesim/sim_scripts/data_dir
 gamesim/static/img
 bower_components
@@ -12,3 +12,5 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
+*.pyc
+*.pyo
